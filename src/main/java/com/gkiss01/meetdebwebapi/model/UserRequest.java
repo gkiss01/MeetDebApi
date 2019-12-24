@@ -15,17 +15,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequest {
+    @NotBlank(message = "Email is required!")
     @Email(message = "Email is not valid!")
     private String email;
 
-    @NotBlank(message="Password is required!")
+    @NotBlank(message = "Password is required!")
     @Size(min = 8, message = "Minimum password length is 8 characters!")
     private String password;
 
-    @NotBlank(message="Name is required!")
+    @NotBlank(message = "Name is required!")
     @Size(min = 4, max = 80, message = "Name must be between 4 and 80 characters long!")
     private String name;
 
-    @NotNull(message="Roles are required!")
+    @NotNull(message = "Roles are required!")
     private Set<Role> roles;
 }
