@@ -4,6 +4,8 @@ import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,7 +26,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<Object> handleOtherExceptions(Exception exception) {
+    public ResponseEntity<Object> handleOtherExceptions(Exception exception) throws Exception {
+        if (exception instanceof AccessDeniedException || exception instanceof AuthenticationException) {
+            throw exception;
+        }
+
         GenericResponse response = new GenericResponse(true, null);
         response.addError(exception.getLocalizedMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

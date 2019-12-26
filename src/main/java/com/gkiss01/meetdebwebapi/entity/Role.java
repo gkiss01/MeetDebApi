@@ -1,8 +1,8 @@
 package com.gkiss01.meetdebwebapi.entity;
 
-//import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
-public enum Role /*implements GrantedAuthority*/ {
+public enum Role implements GrantedAuthority {
     ROLE_ADMIN, ROLE_CLIENT;
 
     public String getAuthority() {
