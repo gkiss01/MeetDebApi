@@ -4,6 +4,7 @@ import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.UserService;
+import com.gkiss01.meetdebwebapi.service.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+
+import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_CLIENT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRequest, User.class);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(new HashSet<>(Collections.singletonList(ROLE_CLIENT)));
 
         user = userRepository.save(user);
         return user;
@@ -100,6 +106,6 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             throw new UsernameNotFoundException(email);
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.getRoles());
+        return new UserWithId(user.getId(), user.getEmail(), user.getPassword(), user.getRoles());
     }
 }
