@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
@@ -27,6 +26,6 @@ public class UserRequest {
     @Size(min = 4, max = 80, message = "Name must be between 4 and 80 characters long!")
     private String name;
 
-    @NotNull(message = "Roles are required!")
+    //@NotNull(message = "Roles are required!")
     private Set<Role> roles;
 }

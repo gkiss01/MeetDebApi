@@ -12,7 +12,7 @@
 
     <groupId>com.gkiss01</groupId>
     <artifactId>meetdeb-web-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>meetdeb-web-api</name>
 
     <description>Web api for the application MeetDeb.</description>
@@ -41,6 +41,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <!-- XML válasz generálása -->

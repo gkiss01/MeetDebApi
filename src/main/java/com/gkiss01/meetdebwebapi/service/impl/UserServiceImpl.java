@@ -1,10 +1,12 @@
 package com.gkiss01.meetdebwebapi.service.impl;
 
+import com.gkiss01.meetdebwebapi.Utils.UserWithId;
+import com.gkiss01.meetdebwebapi.entity.ConfirmationToken;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
+import com.gkiss01.meetdebwebapi.repository.ConfirmationTokenRepository;
 import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.UserService;
-import com.gkiss01.meetdebwebapi.service.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,10 +31,16 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     @Override
     public User createUser(UserRequest userRequest) {
@@ -41,8 +50,14 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userRequest, User.class);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(new HashSet<>(Collections.singletonList(ROLE_CLIENT)));
+        user.setEnabled(false);
 
         user = userRepository.save(user);
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        confirmationTokenRepository.save(confirmationToken);
+
+        emailService.sendConfirmationMessage(user.getEmail(), "http://localhost:8080/users/confirm-account?token=" + confirmationToken.getToken());
         return user;
     }
 
@@ -60,19 +75,21 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
         user.setName(userRequest.getName());
-        user.setRoles(userRequest.getRoles());
+        if (userRequest.getRoles() != null) user.setRoles(userRequest.getRoles());
 
         user = userRepository.save(user);
         return user;
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findUserById(userId);
 
         if (user == null)
             throw new RuntimeException("User not found!");
 
+        confirmationTokenRepository.deleteByUserId(userId);
         userRepository.delete(user);
     }
 
@@ -100,12 +117,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void confirmUser(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findConfirmationTokenByToken(token);
+
+        if (confirmationToken == null)
+            throw new RuntimeException("Confirmation token not found!");
+
+        if (confirmationToken.getUser().getEnabled())
+            throw new RuntimeException("User is already verified!");
+
+        User user = confirmationToken.getUser();
+        user.setEnabled(true);
+
+        userRepository.save(user);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
 
         if (user == null)
             throw new UsernameNotFoundException(email);
 
-        return new UserWithId(user.getId(), user.getEmail(), user.getPassword(), user.getRoles());
+        return new UserWithId(user.getId(), user.getEmail(), user.getPassword(), user.getEnabled(), true, true, true, user.getRoles());
     }
 }

@@ -17,5 +17,7 @@ public class UserResponse {
 
     private String name;
 
+    private Boolean enabled;
+
     private Set<Role> roles;
 }

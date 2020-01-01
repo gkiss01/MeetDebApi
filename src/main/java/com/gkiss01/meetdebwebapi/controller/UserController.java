@@ -1,11 +1,11 @@
 package com.gkiss01.meetdebwebapi.controller;
 
+import com.gkiss01.meetdebwebapi.Utils.UserWithId;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
 import com.gkiss01.meetdebwebapi.service.UserService;
-import com.gkiss01.meetdebwebapi.service.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -76,5 +76,11 @@ public class UserController {
             userResponses.add(userResponse);
         });
         return new GenericResponse(false, null, userResponses);
+    }
+
+    @GetMapping(path = "/confirm-account", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public GenericResponse confirmUser(@RequestParam("token") String token) {
+        userService.confirmUser(token);
+        return new GenericResponse(false, null, null, "User verified!");
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
 
     private static final String API_URL = "/users";
@@ -32,12 +31,13 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests()
+        http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, API_URL).permitAll()
+                .antMatchers(API_URL + "/confirm-account").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().exceptionHandling().accessDeniedHandler(accessIsDeniedHandler).authenticationEntryPoint(unAuthorizedHandler)
-                .and().httpBasic();
+                .and().httpBasic()
+                .and().exceptionHandling().authenticationEntryPoint(unAuthorizedHandler).accessDeniedHandler(accessIsDeniedHandler);
     }
 
     @Override

@@ -12,4 +12,6 @@ public interface UserService extends UserDetailsService {
     void deleteUser(Long userId);
     User getUser(Long userId);
     List<User> getUsers(int page, int limit);
+
+    void confirmUser(String token);
 }

@@ -29,8 +29,12 @@ public class User {
     @Column(nullable = false, length = 80)
     private String name;
 
+    @Column(nullable = false)
+    private Boolean enabled;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 }
