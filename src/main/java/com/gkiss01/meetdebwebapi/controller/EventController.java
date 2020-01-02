@@ -32,7 +32,7 @@ public class EventController {
     public GenericResponse createEvent(@Valid @RequestBody EventRequest eventRequest, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Event event = eventService.createEvent(eventRequest, userDetails.getUserId());
+        Event event = eventService.createEvent(eventRequest, userDetails);
         EventResponse response = modelMapper.map(event, EventResponse.class);
         response.setUsername(event.getUser().getName());
         return GenericResponse.builder().error(false).event(response).build();

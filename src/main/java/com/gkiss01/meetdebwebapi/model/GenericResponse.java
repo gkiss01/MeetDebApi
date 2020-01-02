@@ -31,6 +31,12 @@ public class GenericResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<EventResponse> events;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private ParticipantResponse participant;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<ParticipantResponse> participants;
+
     public void addError(String error) {
         errors.add(error);
     }

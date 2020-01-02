@@ -31,8 +31,8 @@ public class EventServiceImpl implements EventService {
     private ModelMapper modelMapper;
 
     @Override
-    public Event createEvent(EventRequest eventRequest, Long userId) {
-        User user = userRepository.findUserById(userId);
+    public Event createEvent(EventRequest eventRequest, UserWithId userDetails) {
+        User user = userRepository.findUserById(userDetails.getUserId());
 
         if (user == null)
             throw new RuntimeException("User not found!");

@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface ParticipantRepository extends JpaRepository<Participant, ParticipantId> {
 
+    Participant findParticipantById_Event_IdAndId_User_Id(Long eventId, Long userId);
+
     List<Participant> findById_Event_Id(Long eventId, Pageable pageable);
 }
