@@ -1,21 +1,23 @@
 package com.gkiss01.meetdebwebapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Builder
 public class GenericResponse {
 
     private Boolean error;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private String message;
+    private List<String> errors = new ArrayList<>();
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<String> errors = new ArrayList<>();
+    private String message;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private UserResponse user;
@@ -23,20 +25,11 @@ public class GenericResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<UserResponse> users;
 
-    public GenericResponse(Boolean error, UserResponse user) {
-        this.error = error;
-        this.user = user;
-        this.users = null;
-        this.message = null;
-    }
-    public GenericResponse(Boolean error, UserResponse user, List<UserResponse> users) {
-        this(error, user);
-        this.users = users;
-    }
-    public GenericResponse(Boolean error, UserResponse user, List<UserResponse> users, String message) {
-        this(error, user, users);
-        this.message = message;
-    }
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private EventResponse event;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<EventResponse> events;
 
     public void addError(String error) {
         errors.add(error);

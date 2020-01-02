@@ -15,7 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
 
-    private static final String API_URL = "/users";
+    private static final String API_URL_USER = "/users";
+    private static final String API_URL_EVENT = "/events";
 
     @Autowired
     private UserService userService;
@@ -32,8 +33,9 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, API_URL).permitAll()
-                .antMatchers(API_URL + "/confirm-account").permitAll()
+                .antMatchers(HttpMethod.POST, API_URL_USER).permitAll()
+                .antMatchers(API_URL_USER + "/confirm-account").permitAll()
+                .antMatchers(HttpMethod.POST, API_URL_EVENT).permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()

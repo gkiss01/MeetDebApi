@@ -1,4 +1,4 @@
-package com.gkiss01.meetdebwebapi.Utils;
+package com.gkiss01.meetdebwebapi.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 
 public class Utils {
     public static void errorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String error) throws IOException {
-        GenericResponse response = new GenericResponse(true, null);
-        response.addError(error);
+        GenericResponse response = GenericResponse.builder().error(true).errors(Collections.singletonList(error)).build();
         OutputStream out = httpServletResponse.getOutputStream();
 
         ObjectMapper mapper;

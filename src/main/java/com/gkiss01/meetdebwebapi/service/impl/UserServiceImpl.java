@@ -1,12 +1,13 @@
 package com.gkiss01.meetdebwebapi.service.impl;
 
-import com.gkiss01.meetdebwebapi.Utils.UserWithId;
 import com.gkiss01.meetdebwebapi.entity.ConfirmationToken;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.ConfirmationTokenRepository;
+import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.UserService;
+import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -89,6 +93,7 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             throw new RuntimeException("User not found!");
 
+        eventRepository.deleteByUserId(userId);
         confirmationTokenRepository.deleteByUserId(userId);
         userRepository.delete(user);
     }
@@ -111,7 +116,7 @@ public class UserServiceImpl implements UserService {
         List<User> userEntities = usersPage.toList();
 
         if (userEntities.isEmpty())
-            throw new RuntimeException("No records found!");
+            throw new RuntimeException("No users found!");
 
         return userEntities;
     }

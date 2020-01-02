@@ -1,4 +1,4 @@
-package com.gkiss01.meetdebwebapi.Utils;
+package com.gkiss01.meetdebwebapi.utils;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

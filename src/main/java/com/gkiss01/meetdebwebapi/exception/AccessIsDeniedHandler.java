@@ -1,6 +1,6 @@
 package com.gkiss01.meetdebwebapi.exception;
 
-import com.gkiss01.meetdebwebapi.Utils.Utils;
+import com.gkiss01.meetdebwebapi.utils.Utils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,11 @@
 package com.gkiss01.meetdebwebapi.controller;
 
-import com.gkiss01.meetdebwebapi.Utils.UserWithId;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
 import com.gkiss01.meetdebwebapi.service.UserService;
+import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,7 +33,7 @@ public class UserController {
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse createUser(@Valid @RequestBody UserRequest userRequest) {
         User user = userService.createUser(userRequest);
-        return new GenericResponse(false, modelMapper.map(user, UserResponse.class));
+        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -46,21 +46,21 @@ public class UserController {
             throw new RuntimeException("Access is denied!");
 
         User user = userService.updateUser(userId, userRequest);
-        return new GenericResponse(false, modelMapper.map(user, UserResponse.class));
+        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
-        return new GenericResponse(false, null, null, "User deleted!");
+        return GenericResponse.builder().error(false).message("User deleted!").build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
-        return new GenericResponse(false, modelMapper.map(user, UserResponse.class));
+        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -75,12 +75,12 @@ public class UserController {
             UserResponse userResponse = modelMapper.map(u, UserResponse.class);
             userResponses.add(userResponse);
         });
-        return new GenericResponse(false, null, userResponses);
+        return GenericResponse.builder().error(false).users(userResponses).build();
     }
 
     @GetMapping(path = "/confirm-account", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse confirmUser(@RequestParam("token") String token) {
         userService.confirmUser(token);
-        return new GenericResponse(false, null, null, "User verified!");
+        return GenericResponse.builder().error(false).message("User verified!").build();
     }
 }

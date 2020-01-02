@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.Collections;
+
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        GenericResponse response = new GenericResponse(true, null);
+        GenericResponse response = GenericResponse.builder().error(true).build();
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
             response.addError(objectError.getDefaultMessage());
         }
@@ -31,8 +33,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             throw exception;
         }
 
-        GenericResponse response = new GenericResponse(true, null);
-        response.addError(exception.getLocalizedMessage());
+        GenericResponse response = GenericResponse.builder().error(true).errors(Collections.singletonList(exception.getLocalizedMessage())).build();
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

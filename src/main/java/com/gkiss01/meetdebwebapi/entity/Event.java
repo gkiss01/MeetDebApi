@@ -5,36 +5,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Confirmation_Tokens")
-public class ConfirmationToken {
+@Table(name = "Events")
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String token;
+    private OffsetDateTime date;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    @NotBlank(message = "Venue is required!")
+    private String venue;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @Column(nullable = false)
+    @Type(type = "text")
+    @NotBlank(message = "Labels are required!")
+    private String labels;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
-
-    public ConfirmationToken(User user) {
-        this.user = user;
-        created = new Date();
-        token = UUID.randomUUID().toString();
-    }
 }
