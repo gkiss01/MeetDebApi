@@ -72,7 +72,7 @@ public class FakerController {
             if (user == null)
                 throw new RuntimeException("No users found!");
 
-            Event event = new Event(i, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().sentence(), user, 0L, false);
+            Event event = new Event(i, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().sentence(), user.getId(), 0L, false);
             event.setId(null);
 
             eventRepository.save(event);

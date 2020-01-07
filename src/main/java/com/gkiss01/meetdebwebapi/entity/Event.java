@@ -3,8 +3,6 @@ package com.gkiss01.meetdebwebapi.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -33,10 +31,8 @@ public class Event {
     @NotBlank(message = "Labels are required!")
     private String labels;
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
     @Transient
     private Long participants = 0L;

@@ -4,6 +4,7 @@ import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.model.EventRequest;
 import com.gkiss01.meetdebwebapi.model.EventResponse;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.EventService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
@@ -22,6 +23,9 @@ import java.util.List;
 public class EventController {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private EventService eventService;
 
     @Autowired
@@ -34,7 +38,7 @@ public class EventController {
 
         Event event = eventService.createEvent(eventRequest, userDetails);
         EventResponse response = modelMapper.map(event, EventResponse.class);
-        response.setUsername(event.getUser().getName());
+        response.setUsername(userRepository.findNameById(event.getUserId()));
         return GenericResponse.builder().error(false).event(response).build();
     }
 
@@ -46,7 +50,7 @@ public class EventController {
 
         Event event = eventService.updateEvent(eventId, eventRequest, userDetails);
         EventResponse response = modelMapper.map(event, EventResponse.class);
-        response.setUsername(event.getUser().getName());
+        response.setUsername(userRepository.findNameById(event.getUserId()));
         return GenericResponse.builder().error(false).event(response).build();
     }
 
@@ -72,7 +76,7 @@ public class EventController {
 
         eventEntities.forEach(e -> {
             EventResponse eventResponse = modelMapper.map(e, EventResponse.class);
-            eventResponse.setUsername(e.getUser().getName());
+            eventResponse.setUsername(userRepository.findNameById(e.getUserId()));
             eventResponses.add(eventResponse);
         });
         return GenericResponse.builder().error(false).events(eventResponses).build();

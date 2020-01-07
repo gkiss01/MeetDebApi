@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException("User not found!");
 
         Event event = modelMapper.map(eventRequest, Event.class);
-        event.setUser(user);
+        event.setUserId(userDetails.getUserId());
 
         event = eventRepository.save(event);
         return event;
@@ -55,7 +55,7 @@ public class EventServiceImpl implements EventService {
         if (event == null)
             throw new RuntimeException("Event not found!");
 
-        if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUser().getId()))
+        if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
             throw new RuntimeException("Access is denied!");
 
         event.setDate(eventRequest.getDate());
@@ -76,7 +76,7 @@ public class EventServiceImpl implements EventService {
         if (event == null)
             throw new RuntimeException("Event not found!");
 
-        if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUser().getId()))
+        if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
             throw new RuntimeException("Access is denied!");
 
         eventRepository.delete(event);
