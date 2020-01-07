@@ -37,4 +37,10 @@ public class Event {
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    @Transient
+    private Long participants = 0L;
+
+    @Transient
+    private Boolean accepted = false;
 }

@@ -62,10 +62,12 @@ public class EventController {
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse getEvents(@RequestParam(value = "page", defaultValue = "0") int page,
-                                     @RequestParam(value = "limit", defaultValue = "25") int limit) {
+                                     @RequestParam(value = "limit", defaultValue = "25") int limit,
+                                     Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         if (page > 0) page--;
-        List<Event> eventEntities = eventService.getEvents(page, limit);
+        List<Event> eventEntities = eventService.getEvents(page, limit, userDetails);
         List<EventResponse> eventResponses = new ArrayList<>();
 
         eventEntities.forEach(e -> {

@@ -19,4 +19,8 @@ public class EventResponse {
     private String venue;
 
     private String labels;
+
+    private Long participants;
+
+    private Boolean accepted;
 }
