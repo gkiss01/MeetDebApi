@@ -2,7 +2,6 @@ package com.gkiss01.meetdebwebapi.service.impl;
 
 import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.entity.Participant;
-import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
@@ -31,22 +30,17 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     public Participant createParticipant(Long eventId, UserWithId userDetails) {
-        if (participantRepository.findParticipantById_Event_IdAndId_User_Id(eventId, userDetails.getUserId()) != null)
-            throw new RuntimeException("Participant is already created!");
-
-        Event event = eventRepository.findEventById(eventId);
+        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 
         if (event == null)
             throw new RuntimeException("Event not found!");
 
-        User user = userRepository.findUserById(userDetails.getUserId());
+        if (event.getAccepted())
+            throw new RuntimeException("Participant is already created!");
 
-        if (user == null)
-            throw new RuntimeException("User not found!");
-
-        Participant participant = new Participant(new ParticipantId(event, user));
-
+        Participant participant = new Participant(new ParticipantId(eventId, userDetails.getUserId()), null);
         participant = participantRepository.save(participant);
+        participant.setUsername(userRepository.findNameById(userDetails.getUserId()));
         return participant;
     }
 
@@ -59,7 +53,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     @Transactional
     public void deleteParticipant(Long eventId, Long userId) {
-        Participant participant = participantRepository.findParticipantById_Event_IdAndId_User_Id(eventId, userId);
+        Participant participant = participantRepository.findParticipantById_EventIdAndId_UserId(eventId, userId);
 
         if (participant == null)
             throw new RuntimeException("Participant not found!");
@@ -73,7 +67,7 @@ public class ParticipantServiceImpl implements ParticipantService {
             throw new RuntimeException("Event not found!");
 
         Pageable pageableRequest = PageRequest.of(page, limit);
-        List<Participant> participantEntities = participantRepository.findById_Event_Id(eventId, pageableRequest);
+        List<Participant> participantEntities = participantRepository.findParticipantById_EventIdCustom(eventId, pageableRequest);
 
         if (participantEntities.isEmpty())
             throw new RuntimeException("No participants found!");

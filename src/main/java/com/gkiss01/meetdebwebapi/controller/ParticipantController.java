@@ -5,6 +5,7 @@ import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.ParticipantResponse;
 import com.gkiss01.meetdebwebapi.service.ParticipantService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,19 +22,21 @@ public class ParticipantController {
     @Autowired
     private ParticipantService participantService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse createParticipant(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Participant participant = participantService.createParticipant(eventId, userDetails);
-        ParticipantResponse response = new ParticipantResponse(eventId, participant.getId().getUser().getId(), participant.getId().getUser().getName());
-        return GenericResponse.builder().error(false).participant(response).build();
+        return GenericResponse.builder().error(false).participant(modelMapper.map(participant, ParticipantResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse deleteEvent(@PathVariable Long eventId, Authentication authentication) {
+    public GenericResponse deleteParticipant(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         participantService.deleteParticipant(eventId, userDetails);
@@ -42,7 +45,7 @@ public class ParticipantController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{eventId}/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse deleteEvent(@PathVariable Long eventId, @PathVariable Long userId) {
+    public GenericResponse deleteParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
         participantService.deleteParticipant(eventId, userId);
         return GenericResponse.builder().error(false).message("Participant deleted!").build();
     }
@@ -58,7 +61,7 @@ public class ParticipantController {
         List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantEntities.forEach(e -> {
-            ParticipantResponse participantResponse = new ParticipantResponse(null, e.getId().getUser().getId(), e.getId().getUser().getName());
+            ParticipantResponse participantResponse = new ParticipantResponse(null, e.getId().getUserId(), e.getUsername());
             participantResponses.add(participantResponse);
         });
         return GenericResponse.builder().error(false).participants(participantResponses).build();

@@ -3,6 +3,7 @@ package com.gkiss01.meetdebwebapi.service.impl;
 import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.model.EventRequest;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
+import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
 import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.EventService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
@@ -22,6 +23,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -68,6 +72,7 @@ public class EventServiceImpl implements EventService {
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
             throw new RuntimeException("Access is denied!");
 
+        participantRepository.deleteById_EventId(eventId);
         eventRepository.delete(event);
     }
 

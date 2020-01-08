@@ -68,11 +68,11 @@ public class FakerController {
         Faker faker = new Faker(new Locale("hu"));
 
         for (long i = 0; i < count; ++i) {
-            User user = userRepository.findUserByRandom();
-            if (user == null)
+            Long userId = userRepository.findUserIdByRandom();
+            if (userId == null)
                 throw new RuntimeException("No users found!");
 
-            Event event = new Event(i, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().sentence(), user.getId(), null, null, null);
+            Event event = new Event(i, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().sentence(), userId, null, null, null);
             event.setId(null);
 
             eventRepository.save(event);
@@ -85,15 +85,15 @@ public class FakerController {
     public GenericResponse populateParticipants(@PathVariable Long count) {
 
         for (long i = 0; i < count; ++i) {
-            Event event = eventRepository.findEventByRandom();
-            if (event == null)
-                throw new RuntimeException("No event found!");
+            Long eventId = eventRepository.findEventIdByRandom();
+            if (eventId == null)
+                throw new RuntimeException("No events found!");
 
-            User user = userRepository.findUserByRandom();
-            if (user == null)
+            Long userId = userRepository.findUserIdByRandom();
+            if (userId == null)
                 throw new RuntimeException("No users found!");
 
-            Participant participant = new Participant(new ParticipantId(event, user));
+            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
 
             participantRepository.save(participant);
         }
@@ -104,16 +104,15 @@ public class FakerController {
     @GetMapping(path = "/participants/{eventId}/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse populateParticipantsByEvent(@PathVariable Long eventId, @PathVariable Long count) {
 
-        Event event = eventRepository.findEventById(eventId);
-        if (event == null)
+        if (!eventRepository.existsEventById(eventId))
             throw new RuntimeException("Event not found!");
 
         for (long i = 0; i < count; ++i) {
-            User user = userRepository.findUserByRandom();
-            if (user == null)
+            Long userId = userRepository.findUserIdByRandom();
+            if (userId == null)
                 throw new RuntimeException("No users found!");
 
-            Participant participant = new Participant(new ParticipantId(event, user));
+            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
 
             participantRepository.save(participant);
         }

@@ -5,6 +5,7 @@ import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.ConfirmationTokenRepository;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
+import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
 import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.UserService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
@@ -36,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -93,6 +97,8 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             throw new RuntimeException("User not found!");
 
+        participantRepository.deleteById_UserId(userId);
+        participantRepository.deleteParticipantsByEventCreator(userId);
         eventRepository.deleteByUserId(userId);
         confirmationTokenRepository.deleteByUserId(userId);
         userRepository.delete(user);

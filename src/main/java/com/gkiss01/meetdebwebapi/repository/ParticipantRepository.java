@@ -4,16 +4,26 @@ import com.gkiss01.meetdebwebapi.entity.Participant;
 import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public interface ParticipantRepository extends JpaRepository<Participant, ParticipantId> {
 
-    Participant findParticipantById_Event_IdAndId_User_Id(Long eventId, Long userId);
+    Participant findParticipantById_EventIdAndId_UserId(Long eventId, Long userId);
 
-    List<Participant> findById_Event_Id(Long eventId, Pageable pageable);
+    @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Participant(p.id, (SELECT u.name FROM User u WHERE u.id = p.id.userId) AS username) FROM Participant p WHERE p.id.eventId = :eventId")
+    List<Participant> findParticipantById_EventIdCustom(@Param("eventId") Long eventId, Pageable pageable);
 
-    Long countById_Event_Id(Long eventId);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Participant p WHERE p.id.eventId IN (SELECT e.id FROM Event e WHERE e.userId = :userId)")
+    void deleteParticipantsByEventCreator(@Param("userId") Long userId);
 
-    Boolean existsById_Event_IdAndId_User_Id(Long eventId, Long userId);
+    void deleteById_EventId(Long eventId);
+
+    void deleteById_UserId(Long eventId);
 }

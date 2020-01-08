@@ -15,5 +15,5 @@ public class ParticipantResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Long userId;
 
-    private String name;
+    private String username;
 }
