@@ -69,9 +69,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     public List<Participant> getParticipants(Long eventId, int page, int limit) {
-        Event event = eventRepository.findEventById(eventId);
-
-        if (event == null)
+        if (!eventRepository.existsEventById(eventId))
             throw new RuntimeException("Event not found!");
 
         Pageable pageableRequest = PageRequest.of(page, limit);

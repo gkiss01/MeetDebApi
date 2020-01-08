@@ -35,6 +35,9 @@ public class Event {
     private Long userId;
 
     @Transient
+    private String username = "";
+
+    @Transient
     private Long participants = 0L;
 
     @Transient
