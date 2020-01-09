@@ -25,6 +25,7 @@ public class Utils {
             mapper = new ObjectMapper();
         }
 
+        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         mapper.writeValue(out, response);
         out.flush();
     }

@@ -1,6 +1,8 @@
 package com.gkiss01.meetdebwebapi.controller;
 
+import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.entity.Participant;
+import com.gkiss01.meetdebwebapi.model.EventResponse;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.ParticipantResponse;
 import com.gkiss01.meetdebwebapi.service.ParticipantService;
@@ -30,8 +32,8 @@ public class ParticipantController {
     public GenericResponse createParticipant(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Participant participant = participantService.createParticipant(eventId, userDetails);
-        return GenericResponse.builder().error(false).participant(modelMapper.map(participant, ParticipantResponse.class)).build();
+        Event event = participantService.createParticipant(eventId, userDetails);
+        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -39,15 +41,15 @@ public class ParticipantController {
     public GenericResponse deleteParticipant(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        participantService.deleteParticipant(eventId, userDetails);
-        return GenericResponse.builder().error(false).message("Participant deleted!").build();
+        Event event = participantService.deleteParticipant(eventId, userDetails);
+        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{eventId}/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse deleteParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
-        participantService.deleteParticipant(eventId, userId);
-        return GenericResponse.builder().error(false).message("Participant deleted!").build();
+        Event event = participantService.deleteParticipant(eventId, userId);
+        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")

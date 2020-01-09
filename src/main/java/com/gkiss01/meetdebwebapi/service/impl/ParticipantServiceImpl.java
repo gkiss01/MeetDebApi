@@ -5,7 +5,6 @@ import com.gkiss01.meetdebwebapi.entity.Participant;
 import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
-import com.gkiss01.meetdebwebapi.repository.UserRepository;
 import com.gkiss01.meetdebwebapi.service.ParticipantService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
-    public Participant createParticipant(Long eventId, UserWithId userDetails) {
+    public Event createParticipant(Long eventId, UserWithId userDetails) {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 
         if (event == null)
@@ -39,26 +35,26 @@ public class ParticipantServiceImpl implements ParticipantService {
             throw new RuntimeException("Participant is already created!");
 
         Participant participant = new Participant(new ParticipantId(eventId, userDetails.getUserId()), null);
-        participant = participantRepository.save(participant);
-        participant.setUsername(userRepository.findNameById(userDetails.getUserId()));
-        return participant;
+        participantRepository.save(participant);
+        return eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
     }
 
     @Override
     @Transactional
-    public void deleteParticipant(Long eventId, UserWithId userDetails) {
-        deleteParticipant(eventId, userDetails.getUserId());
+    public Event deleteParticipant(Long eventId, UserWithId userDetails) {
+        return deleteParticipant(eventId, userDetails.getUserId());
     }
 
     @Override
     @Transactional
-    public void deleteParticipant(Long eventId, Long userId) {
+    public Event deleteParticipant(Long eventId, Long userId) {
         Participant participant = participantRepository.findParticipantById_EventIdAndId_UserId(eventId, userId);
 
         if (participant == null)
             throw new RuntimeException("Participant not found!");
 
         participantRepository.delete(participant);
+        return eventRepository.findEventByIdCustom(eventId, userId);
     }
 
     @Override

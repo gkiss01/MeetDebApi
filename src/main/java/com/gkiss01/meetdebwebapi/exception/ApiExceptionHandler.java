@@ -24,7 +24,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
             response.addError(objectError.getDefaultMessage());
         }
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {Exception.class})
@@ -34,6 +34,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         GenericResponse response = GenericResponse.builder().error(true).errors(Collections.singletonList(exception.getLocalizedMessage())).build();
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
