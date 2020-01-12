@@ -17,6 +17,7 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
 
     private static final String API_URL_USER = "/users";
     private static final String API_URL_EVENT = "/events";
+    private static final String API_URL_IMAGE = "/images/**";
 
     @Autowired
     private UserService userService;
@@ -36,6 +37,7 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, API_URL_USER).permitAll()
                 .antMatchers(API_URL_USER + "/confirm-account").permitAll()
                 .antMatchers(HttpMethod.POST, API_URL_EVENT).permitAll()
+                .antMatchers(HttpMethod.GET, API_URL_IMAGE).permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()

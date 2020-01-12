@@ -76,6 +76,13 @@
             <version>2.3.5</version>
         </dependency>
 
+        <!-- Függőség fájlok feltöltéséhez -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+
         <!-- JavaFaker az adatbázis feltöltéséhez -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
