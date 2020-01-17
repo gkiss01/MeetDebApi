@@ -5,6 +5,7 @@ import com.gkiss01.meetdebwebapi.model.EventRequest;
 import com.gkiss01.meetdebwebapi.model.EventResponse;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.service.EventService;
+import com.gkiss01.meetdebwebapi.service.FileService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -25,14 +27,22 @@ public class EventController {
     private EventService eventService;
 
     @Autowired
+    private FileService fileService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse createEvent(@Valid @RequestBody EventRequest eventRequest, Authentication authentication) {
+    public GenericResponse createEvent(@RequestPart("event") @Valid EventRequest eventRequest,
+                                       @RequestPart(value = "file", required = false) MultipartFile file,
+                                       Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Event event = eventService.createEvent(eventRequest, userDetails);
+        if (file != null && !file.isEmpty())
+            fileService.storeFile(event.getId(), file);
+
         return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
     }
 

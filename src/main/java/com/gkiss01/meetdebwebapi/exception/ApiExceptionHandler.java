@@ -1,6 +1,7 @@
 package com.gkiss01.meetdebwebapi.exception;
 
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.utils.CustomFileNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleMaxUploadSizeExceeded() {
         GenericResponse response = GenericResponse.builder().error(true).errors(Collections.singletonList("Size limit is exceeded!")).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(value = {CustomFileNotFoundException.class})
+    public ResponseEntity<Object> handleCustomFileNotFound() {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(value = {Exception.class})

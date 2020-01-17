@@ -17,7 +17,7 @@ public class UploadController {
     @Autowired
     private FileService fileService;
 
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = { "multipart/form-data" })
     public GenericResponse writeFile(@PathVariable Long eventId,
                                      @RequestParam("file") MultipartFile file) {
@@ -26,6 +26,7 @@ public class UploadController {
         return GenericResponse.builder().error(false).message("Upload successful!").build();
     }
 
+    @ResponseBody
     @GetMapping
     public ResponseEntity<Resource> readFile(@PathVariable Long eventId) {
         Resource resource = fileService.loadFile(eventId);

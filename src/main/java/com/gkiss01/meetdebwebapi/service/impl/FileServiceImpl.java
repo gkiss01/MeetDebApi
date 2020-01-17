@@ -2,6 +2,8 @@ package com.gkiss01.meetdebwebapi.service.impl;
 
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.service.FileService;
+import com.gkiss01.meetdebwebapi.utils.CustomFileNotFoundException;
+import com.gkiss01.meetdebwebapi.utils.ImageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -16,7 +18,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -29,10 +30,10 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     public FileServiceImpl(@Value("${file.upload.dir}") String uploadDir) {
-        this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+        fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
 
         try {
-            Files.createDirectories(this.fileStorageLocation);
+            Files.createDirectories(fileStorageLocation);
         } catch (Exception e) {
             throw new RuntimeException("Could not create directory!");
         }
@@ -46,26 +47,25 @@ public class FileServiceImpl implements FileService {
             if (StringUtils.cleanPath(file.getOriginalFilename()).contains(".."))
                 throw new RuntimeException("Filename is invalid!");
 
-            Path targetLocation = this.fileStorageLocation.resolve(eventId.toString());
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            Path targetLocation = fileStorageLocation.resolve(eventId.toString().concat(".jpeg"));
+            boolean result = ImageConverter.convertFormat(file.getInputStream(), targetLocation.toString(), "jpeg");
+            if (!result)
+                throw new RuntimeException("Could not convert image!");
         }
         catch (IOException ex) {
             throw new RuntimeException("Upload failed!");
         }
     }
+
     public Resource loadFile(Long eventId) {
-        if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
-
         try {
-            Path filePath = this.fileStorageLocation.resolve(eventId.toString()).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            Resource resource = new UrlResource(fileStorageLocation.resolve(eventId.toString().concat(".jpeg")).normalize().toUri());
 
-            if(resource.exists()) return resource;
-            else throw new RuntimeException("File not found!");
-
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException("File not found!");
+            if (resource.exists()) return resource;
+            else throw new CustomFileNotFoundException("File not found!");
+        }
+        catch (MalformedURLException e) {
+            throw new CustomFileNotFoundException("File not found!");
         }
     }
 }
