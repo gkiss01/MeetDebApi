@@ -3,10 +3,7 @@ package com.gkiss01.meetdebwebapi.service.impl;
 import com.gkiss01.meetdebwebapi.entity.ConfirmationToken;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
-import com.gkiss01.meetdebwebapi.repository.ConfirmationTokenRepository;
-import com.gkiss01.meetdebwebapi.repository.EventRepository;
-import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
-import com.gkiss01.meetdebwebapi.repository.UserRepository;
+import com.gkiss01.meetdebwebapi.repository.*;
 import com.gkiss01.meetdebwebapi.service.UserService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
@@ -40,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ParticipantRepository participantRepository;
+
+    @Autowired
+    private DateRepository dateRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService {
 
         participantRepository.deleteById_UserId(userId);
         participantRepository.deleteParticipantsByEventCreator(userId);
+        dateRepository.deleteDatesByEventCreator(userId);
         eventRepository.deleteByUserId(userId);
         confirmationTokenRepository.deleteByUserId(userId);
         userRepository.delete(user);

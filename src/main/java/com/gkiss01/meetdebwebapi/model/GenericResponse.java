@@ -1,10 +1,10 @@
 package com.gkiss01.meetdebwebapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gkiss01.meetdebwebapi.entity.Date;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,7 +14,7 @@ public class GenericResponse {
     private Boolean error;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<String> errors = new ArrayList<>();
+    private List<String> errors;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String message;
@@ -36,6 +36,12 @@ public class GenericResponse {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<ParticipantResponse> participants;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Date date;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<Date> dates;
 
     public void addError(String error) {
         errors.add(error);
