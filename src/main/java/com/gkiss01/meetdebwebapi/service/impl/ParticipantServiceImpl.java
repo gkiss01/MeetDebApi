@@ -5,6 +5,7 @@ import com.gkiss01.meetdebwebapi.entity.Participant;
 import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
+import com.gkiss01.meetdebwebapi.repository.VoteRepository;
 import com.gkiss01.meetdebwebapi.service.ParticipantService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private VoteRepository voteRepository;
+
     @Override
     public Event createParticipant(Long eventId, UserWithId userDetails) {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
@@ -35,6 +39,7 @@ public class ParticipantServiceImpl implements ParticipantService {
             throw new RuntimeException("Participant is already created!");
 
         Participant participant = new Participant(new ParticipantId(eventId, userDetails.getUserId()), null);
+        voteRepository.deleteByEventIdAndUserId(eventId, userDetails.getUserId());
         participantRepository.save(participant);
         return eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
     }

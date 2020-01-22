@@ -25,5 +25,5 @@ public interface ParticipantRepository extends JpaRepository<Participant, Partic
 
     void deleteById_EventId(Long eventId);
 
-    void deleteById_UserId(Long eventId);
+    void deleteById_UserId(Long userId);
 }

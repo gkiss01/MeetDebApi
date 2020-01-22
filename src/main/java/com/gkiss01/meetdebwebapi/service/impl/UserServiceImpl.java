@@ -42,6 +42,9 @@ public class UserServiceImpl implements UserService {
     private DateRepository dateRepository;
 
     @Autowired
+    private VoteRepository voteRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -99,6 +102,8 @@ public class UserServiceImpl implements UserService {
 
         participantRepository.deleteById_UserId(userId);
         participantRepository.deleteParticipantsByEventCreator(userId);
+        voteRepository.deleteById_UserId(userId);
+        voteRepository.deleteVotesByDateEventCreator(userId);
         dateRepository.deleteDatesByEventCreator(userId);
         eventRepository.deleteByUserId(userId);
         confirmationTokenRepository.deleteByUserId(userId);

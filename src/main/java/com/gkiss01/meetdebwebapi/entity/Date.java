@@ -23,6 +23,12 @@ public class Date {
     @Column(nullable = false)
     private OffsetDateTime date;
 
+    @Transient
+    private Long votes = 0L;
+
+    @Transient
+    private Boolean accepted = false;
+
     public Date(Long eventId, OffsetDateTime date) {
         this.eventId = eventId;
         this.date = date;

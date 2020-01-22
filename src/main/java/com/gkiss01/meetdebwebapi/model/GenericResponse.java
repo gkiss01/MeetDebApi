@@ -40,7 +40,7 @@ public class GenericResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Date date;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Date> dates;
 
     public void addError(String error) {
