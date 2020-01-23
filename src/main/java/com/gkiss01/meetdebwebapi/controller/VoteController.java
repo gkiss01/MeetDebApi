@@ -10,6 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("votes")
 public class VoteController {
@@ -22,8 +24,8 @@ public class VoteController {
     public GenericResponse createVote(@PathVariable Long dateId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Date date = voteService.createVote(dateId, userDetails);
-        return GenericResponse.builder().error(false).date(date).build();
+        List<Date> dateEntities = voteService.createVote(dateId, userDetails);
+        return GenericResponse.builder().error(false).dates(dateEntities).build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")

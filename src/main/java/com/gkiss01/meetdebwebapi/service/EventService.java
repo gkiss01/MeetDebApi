@@ -10,5 +10,6 @@ public interface EventService {
     Event createEvent(EventRequest eventRequest, UserWithId userDetails);
     Event updateEvent(Long eventId, EventRequest eventRequest, UserWithId userDetails);
     void deleteEvent(Long eventId, UserWithId userDetails);
+    Event getEvent(Long eventId, UserWithId userDetails);
     List<Event> getEvents(int page, int limit, UserWithId userDetails);
 }

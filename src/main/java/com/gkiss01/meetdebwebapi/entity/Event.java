@@ -42,4 +42,7 @@ public class Event {
 
     @Transient
     private Boolean accepted = false;
+
+    @Transient
+    private Boolean voted = false;
 }

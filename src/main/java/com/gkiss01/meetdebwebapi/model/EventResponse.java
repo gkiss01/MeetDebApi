@@ -23,4 +23,6 @@ public class EventResponse {
     private Long participants;
 
     private Boolean accepted;
+
+    private Boolean voted;
 }

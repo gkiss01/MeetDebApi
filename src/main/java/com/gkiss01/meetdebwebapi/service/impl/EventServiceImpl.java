@@ -83,6 +83,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Event getEvent(Long eventId, UserWithId userDetails) {
+        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+
+        if (event == null)
+            throw new RuntimeException("Event not found!");
+
+        return event;
+    }
+
+    @Override
     public List<Event> getEvents(int page, int limit, UserWithId userDetails) {
         Pageable pageableRequest = PageRequest.of(page, limit);
         List<Event> eventEntities = eventRepository.findAllByOrderByDateCustom(userDetails.getUserId(), pageableRequest);
