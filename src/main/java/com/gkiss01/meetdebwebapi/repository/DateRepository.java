@@ -36,4 +36,7 @@ public interface DateRepository extends JpaRepository<Date, Long> {
     void deleteDatesByEventCreator(@Param("userId") Long userId);
 
     void deleteByEventId(Long eventId);
+
+    @Query(value = "SELECT id FROM event_dates ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Long findDateIdByRandom();
 }
