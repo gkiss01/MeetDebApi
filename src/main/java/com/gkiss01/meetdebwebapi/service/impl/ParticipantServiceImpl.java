@@ -29,6 +29,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private VoteRepository voteRepository;
 
     @Override
+    @Transactional
     public Event createParticipant(Long eventId, UserWithId userDetails) {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 

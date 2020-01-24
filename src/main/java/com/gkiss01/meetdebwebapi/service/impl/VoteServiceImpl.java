@@ -28,6 +28,7 @@ public class VoteServiceImpl implements VoteService {
     private ParticipantRepository participantRepository;
 
     @Override
+    @Transactional
     public List<Date> createVote(Long dateId, UserWithId userDetails) {
         Date date = dateRepository.findDateByIdCustom(dateId, userDetails.getUserId());
 
@@ -38,7 +39,7 @@ public class VoteServiceImpl implements VoteService {
             throw new RuntimeException("Vote is already created!");
 
         Vote vote = new Vote(new VoteId(dateId, userDetails.getUserId()));
-        participantRepository.deleteById(new ParticipantId(date.getEventId(), userDetails.getUserId()));
+        participantRepository.deleteById_EventIdAndId_UserId(date.getEventId(), userDetails.getUserId());
         voteRepository.deleteByEventIdAndUserId(date.getEventId(), userDetails.getUserId());
         voteRepository.save(vote);
         return dateRepository.findDateByEventIdOrderByDateCustom(date.getEventId(), userDetails.getUserId());

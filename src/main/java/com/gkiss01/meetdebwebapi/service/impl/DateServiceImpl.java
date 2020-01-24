@@ -26,7 +26,7 @@ public class DateServiceImpl implements DateService {
     private VoteRepository voteRepository;
 
     @Override
-    public Date createDate(Long eventId, OffsetDateTime dateTime) {
+    public List<Date> createDate(Long eventId, OffsetDateTime dateTime, UserWithId userDetails) {
         if (!eventRepository.existsEventById(eventId))
             throw new RuntimeException("Event not found!");
 
@@ -34,7 +34,8 @@ public class DateServiceImpl implements DateService {
             throw new RuntimeException("Date is already created!");
 
         Date date = new Date(eventId, dateTime);
-        return dateRepository.save(date);
+        dateRepository.save(date);
+        return dateRepository.findDateByEventIdOrderByDateCustom(eventId, userDetails.getUserId());
     }
 
     @Override

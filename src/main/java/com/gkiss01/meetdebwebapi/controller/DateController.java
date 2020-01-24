@@ -24,10 +24,12 @@ public class DateController {
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse createDate(@PathVariable Long eventId,
-                                      @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTime) {
+                                      @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTime,
+                                      Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Date date = dateService.createDate(eventId, dateTime);
-        return GenericResponse.builder().error(false).date(date).build();
+        List<Date> dateEntities = dateService.createDate(eventId, dateTime, userDetails);
+        return GenericResponse.builder().error(false).dates(dateEntities).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
