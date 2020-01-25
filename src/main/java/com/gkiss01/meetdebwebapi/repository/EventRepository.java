@@ -10,14 +10,14 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Event(e.id, e.date, e.venue, e.labels, e.userId, (SELECT u.name FROM User u WHERE u.id = e.userId) AS username,\n" +
+    @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Event(e.id, e.name, e.date, e.venue, e.labels, e.userId, (SELECT u.name FROM User u WHERE u.id = e.userId) AS username,\n" +
             "(SELECT COUNT(p) FROM Participant p WHERE p.id.eventId = e.id) AS participants,\n" +
             "CASE WHEN (SELECT p.id.userId FROM Participant p WHERE p.id.userId = :userId and p.id.eventId = e.id) is not null THEN true ELSE false END AS accepted,\n" +
             "CASE WHEN (SELECT d.eventId FROM Date d WHERE d.eventId = e.id AND d.id IN (SELECT v.id.dateId FROM Vote v WHERE v.id.userId = :userId)) is not null THEN true ELSE false END AS voted)\n" +
             "FROM Event e WHERE e.id = :eventId")
     Event findEventByIdCustom(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Event(e.id, e.date, e.venue, e.labels, e.userId, (SELECT u.name FROM User u WHERE u.id = e.userId) AS username,\n" +
+    @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Event(e.id, e.name, e.date, e.venue, e.labels, e.userId, (SELECT u.name FROM User u WHERE u.id = e.userId) AS username,\n" +
             "(SELECT COUNT(p) FROM Participant p WHERE p.id.eventId = e.id) AS participants,\n" +
             "CASE WHEN (SELECT p.id.userId FROM Participant p WHERE p.id.userId = :userId and p.id.eventId = e.id) is not null THEN true ELSE false END AS accepted,\n" +
             "CASE WHEN (SELECT d.eventId FROM Date d WHERE d.eventId = e.id AND d.id IN (SELECT v.id.dateId FROM Vote v WHERE v.id.userId = :userId)) is not null THEN true ELSE false END AS voted)\n" +

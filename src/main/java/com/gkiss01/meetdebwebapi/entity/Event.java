@@ -20,6 +20,10 @@ public class Event {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Name is required!")
+    private String name;
+
+    @Column(nullable = false)
     private OffsetDateTime date;
 
     @Column(nullable = false)

@@ -14,6 +14,8 @@ public class EventResponse {
 
     private String username;
 
+    private String name;
+
     private OffsetDateTime date;
 
     private String venue;

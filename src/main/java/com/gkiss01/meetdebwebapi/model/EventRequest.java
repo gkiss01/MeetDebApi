@@ -13,6 +13,9 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventRequest {
+    @NotBlank(message = "Name is required!")
+    private String name;
+
     @NotNull(message = "Date is required!")
     private OffsetDateTime date;
 
