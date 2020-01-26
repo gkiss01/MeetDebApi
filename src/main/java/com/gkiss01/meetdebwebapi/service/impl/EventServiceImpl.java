@@ -4,6 +4,8 @@ import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.model.EventRequest;
 import com.gkiss01.meetdebwebapi.repository.*;
 import com.gkiss01.meetdebwebapi.service.EventService;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +54,10 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findEventById(eventId);
 
         if (event == null)
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
-            throw new RuntimeException("Access is denied!");
+            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
 
         event.setDate(eventRequest.getDate());
         event.setVenue(eventRequest.getVenue());
@@ -71,10 +73,10 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findEventById(eventId);
 
         if (event == null)
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
-            throw new RuntimeException("Access is denied!");
+            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
 
         participantRepository.deleteById_EventId(eventId);
         voteRepository.deleteVotesByDateEvent(eventId);
@@ -87,7 +89,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 
         if (event == null)
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         return event;
     }
@@ -98,7 +100,7 @@ public class EventServiceImpl implements EventService {
         List<Event> eventEntities = eventRepository.findAllByOrderByDateCustom(userDetails.getUserId(), pageableRequest);
 
         if (eventEntities.isEmpty())
-            throw new RuntimeException("No events found!");
+            throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
 
         return eventEntities;
     }

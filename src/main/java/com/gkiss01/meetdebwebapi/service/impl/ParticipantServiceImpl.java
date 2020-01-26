@@ -7,6 +7,8 @@ import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.ParticipantRepository;
 import com.gkiss01.meetdebwebapi.repository.VoteRepository;
 import com.gkiss01.meetdebwebapi.service.ParticipantService;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -34,10 +36,10 @@ public class ParticipantServiceImpl implements ParticipantService {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 
         if (event == null)
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         if (event.getAccepted())
-            throw new RuntimeException("Participant is already created!");
+            throw new CustomRuntimeException(ErrorCodes.PARTICIPANT_ALREADY_CREATED);
 
         Participant participant = new Participant(new ParticipantId(eventId, userDetails.getUserId()), null);
         voteRepository.deleteByEventIdAndUserId(eventId, userDetails.getUserId());
@@ -57,7 +59,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         Participant participant = participantRepository.findParticipantById_EventIdAndId_UserId(eventId, userId);
 
         if (participant == null)
-            throw new RuntimeException("Participant not found!");
+            throw new CustomRuntimeException(ErrorCodes.PARTICIPANT_NOT_FOUND);
 
         participantRepository.delete(participant);
         return eventRepository.findEventByIdCustom(eventId, userId);
@@ -66,13 +68,13 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     public List<Participant> getParticipants(Long eventId, int page, int limit) {
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         Pageable pageableRequest = PageRequest.of(page, limit);
         List<Participant> participantEntities = participantRepository.findParticipantById_EventIdCustom(eventId, pageableRequest);
 
         if (participantEntities.isEmpty())
-            throw new RuntimeException("No participants found!");
+            throw new CustomRuntimeException(ErrorCodes.NO_PARTICIPANTS_FOUND);
 
         return participantEntities;
     }
