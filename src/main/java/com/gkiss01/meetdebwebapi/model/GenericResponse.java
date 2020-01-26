@@ -5,7 +5,6 @@ import com.gkiss01.meetdebwebapi.entity.Date;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,6 +12,9 @@ import java.util.List;
 public class GenericResponse {
 
     private Boolean error;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private int errorCode;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> errors;

@@ -2,6 +2,8 @@ package com.gkiss01.meetdebwebapi.exception;
 
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.utils.CustomFileNotFoundException;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
             errors.add(objectError.getDefaultMessage());
         }
-        GenericResponse response = GenericResponse.builder().error(true).errors(errors).build();
+        GenericResponse response = GenericResponse.builder().error(true).errorCode(ErrorCodes.BAD_USER_REQUEST_FORMAT.getCode()).errors(errors).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -41,6 +43,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {CustomFileNotFoundException.class})
     public ResponseEntity<Object> handleCustomFileNotFound() {
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(value = {CustomRuntimeException.class})
+    public ResponseEntity<Object> handleCustomRuntimeException(CustomRuntimeException exception) {
+        String error;
+        switch (exception.getErrorCode()) {
+            case USER_NOT_FOUND: error = "User is not found!"; break;
+            case NO_USERS_FOUND: error = "No users found!"; break;
+            case CONFIRMATION_TOKEN_NOT_FOUND: error = "Confirmation token is not found!"; break;
+            case EMAIL_ALREADY_IN_USE: error = "Email is already in use!"; break;
+            case USER_ALREADY_VERIFIED: error = "User is already verified!"; break;
+            case BAD_USER_REQUEST_FORMAT: error = "Bad user request format!"; break;
+            default: error = "Unknown error!";
+        }
+
+        GenericResponse response = GenericResponse.builder().error(true).errorCode(exception.getErrorCode().getCode()).errors(Collections.singletonList(error)).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {Exception.class})

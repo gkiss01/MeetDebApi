@@ -5,6 +5,8 @@ import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.*;
 import com.gkiss01.meetdebwebapi.service.UserService;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(UserRequest userRequest) {
         if (userRepository.findUserByEmail(userRequest.getEmail()) != null)
-            throw new RuntimeException("Email is already in use!");
+            throw new CustomRuntimeException(ErrorCodes.EMAIL_ALREADY_IN_USE);
 
         User user = modelMapper.map(userRequest, User.class);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -77,11 +79,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserById(userId);
 
         if (user == null)
-            throw new RuntimeException("User not found!");
+            throw new CustomRuntimeException(ErrorCodes.USER_NOT_FOUND);
 
         User tempUser;
         if ((tempUser = userRepository.findUserByEmail(userRequest.getEmail())) != null && !tempUser.getId().equals(userId))
-            throw new RuntimeException("Email is already in use!");
+            throw new CustomRuntimeException(ErrorCodes.EMAIL_ALREADY_IN_USE);
 
         user.setEmail(userRequest.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
@@ -98,7 +100,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserById(userId);
 
         if (user == null)
-            throw new RuntimeException("User not found!");
+            throw new CustomRuntimeException(ErrorCodes.USER_NOT_FOUND);
 
         participantRepository.deleteById_UserId(userId);
         participantRepository.deleteParticipantsByEventCreator(userId);
@@ -115,7 +117,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserById(userId);
 
         if (user == null)
-            throw new RuntimeException("User not found!");
+            throw new CustomRuntimeException(ErrorCodes.USER_NOT_FOUND);
 
         return user;
     }
@@ -128,7 +130,7 @@ public class UserServiceImpl implements UserService {
         List<User> userEntities = usersPage.toList();
 
         if (userEntities.isEmpty())
-            throw new RuntimeException("No users found!");
+            throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
         return userEntities;
     }
@@ -138,10 +140,10 @@ public class UserServiceImpl implements UserService {
         ConfirmationToken confirmationToken = confirmationTokenRepository.findConfirmationTokenByToken(token);
 
         if (confirmationToken == null)
-            throw new RuntimeException("Confirmation token not found!");
+            throw new CustomRuntimeException(ErrorCodes.CONFIRMATION_TOKEN_NOT_FOUND);
 
         if (confirmationToken.getUser().getEnabled())
-            throw new RuntimeException("User is already verified!");
+            throw new CustomRuntimeException(ErrorCodes.USER_ALREADY_VERIFIED);
 
         User user = confirmationToken.getUser();
         user.setEnabled(true);
