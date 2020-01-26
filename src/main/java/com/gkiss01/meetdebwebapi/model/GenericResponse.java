@@ -5,6 +5,7 @@ import com.gkiss01.meetdebwebapi.entity.Date;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -42,8 +43,4 @@ public class GenericResponse {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Date> dates;
-
-    public void addError(String error) {
-        errors.add(error);
-    }
 }

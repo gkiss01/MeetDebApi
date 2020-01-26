@@ -15,17 +15,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        GenericResponse response = GenericResponse.builder().error(true).build();
+        List<String> errors = new ArrayList<>();
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
-            response.addError(objectError.getDefaultMessage());
+            errors.add(objectError.getDefaultMessage());
         }
+        GenericResponse response = GenericResponse.builder().error(true).errors(errors).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
