@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class Utils {
     public static void errorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ErrorCodes errorCode) throws IOException {
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(errorCode.getCode())
+        GenericResponse response = GenericResponse.builder().error(true).errorCode(errorCode)
                 .errors(Collections.singletonList(getErrorString(errorCode))).build();
         OutputStream out = httpServletResponse.getOutputStream();
 
@@ -62,7 +62,7 @@ public class Utils {
 
             case BAD_REQUEST_FORMAT: return "Bad request format!";
             case ACCESS_DENIED: return "Access is denied!";
-            case USER_DISABLED_NOT_VALID: return "User is disabled or not valid!";
+            case USER_DISABLED_OR_NOT_VALID: return "User is disabled or not valid!";
 
             default: return "Unknown error!";
         }

@@ -2,9 +2,12 @@ package com.gkiss01.meetdebwebapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gkiss01.meetdebwebapi.entity.Date;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.List;
 
 @Getter
@@ -14,7 +17,8 @@ public class GenericResponse {
     private Boolean error;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private int errorCode;
+    @Enumerated(EnumType.STRING)
+    private ErrorCodes errorCode;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> errors;

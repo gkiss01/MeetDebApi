@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCodes {
-    USER_DISABLED_NOT_VALID(10),
+    USER_DISABLED_OR_NOT_VALID(10),
     ACCESS_DENIED(11),
     BAD_REQUEST_FORMAT(12),
+    UNKNOWN(13),
 
     USER_NOT_FOUND(100),
     NO_USERS_FOUND(101),
