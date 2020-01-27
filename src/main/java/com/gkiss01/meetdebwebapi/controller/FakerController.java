@@ -6,6 +6,8 @@ import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import com.gkiss01.meetdebwebapi.entity.idclass.VoteId;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.repository.*;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -69,7 +71,7 @@ public class FakerController {
         for (long i = 0; i < count; ++i) {
             Long userId = userRepository.findUserIdByRandom();
             if (userId == null)
-                throw new RuntimeException("No users found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
             Event event = new Event(i, faker.funnyName().name(), faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().paragraph(5), userId, null, null, null, null);
             event.setId(null);
@@ -86,11 +88,11 @@ public class FakerController {
         for (long i = 0; i < count; ++i) {
             Long eventId = eventRepository.findEventIdByRandom();
             if (eventId == null)
-                throw new RuntimeException("No events found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
 
             Long userId = userRepository.findUserIdByRandom();
             if (userId == null)
-                throw new RuntimeException("No users found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
             Participant participant = new Participant(new ParticipantId(eventId, userId), null);
 
@@ -104,12 +106,12 @@ public class FakerController {
     public GenericResponse populateParticipantsByEvent(@PathVariable Long eventId, @PathVariable Long count) {
 
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         for (long i = 0; i < count; ++i) {
             Long userId = userRepository.findUserIdByRandom();
             if (userId == null)
-                throw new RuntimeException("No users found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
             Participant participant = new Participant(new ParticipantId(eventId, userId), null);
 
@@ -127,7 +129,7 @@ public class FakerController {
         for (long i = 0; i < count; ++i) {
             Long eventId = eventRepository.findEventIdByRandom();
             if (eventId == null)
-                throw new RuntimeException("No events found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
 
             Date date = new Date(eventId, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC));
 
@@ -141,7 +143,7 @@ public class FakerController {
     public GenericResponse populateDatesByEvent(@PathVariable Long eventId, @PathVariable Long count) {
 
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         Faker faker = new Faker(new Locale("hu"));
 
@@ -160,11 +162,11 @@ public class FakerController {
         for (long i = 0; i < count; ++i) {
             Long dateId = dateRepository.findDateIdByRandom();
             if (dateId == null)
-                throw new RuntimeException("No dates found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_DATES_FOUND);
 
             Long userId = userRepository.findUserIdByRandom();
             if (userId == null)
-                throw new RuntimeException("No users found!");
+                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
             Vote vote = new Vote(new VoteId(dateId, userId));
 

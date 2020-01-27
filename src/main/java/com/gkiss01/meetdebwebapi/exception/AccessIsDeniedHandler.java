@@ -1,5 +1,6 @@
 package com.gkiss01.meetdebwebapi.exception;
 
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.Utils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -14,6 +15,6 @@ import java.io.IOException;
 public class AccessIsDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-        Utils.errorResponse(httpServletRequest, httpServletResponse, "Access is denied!");
+        Utils.errorResponse(httpServletRequest, httpServletResponse, ErrorCodes.ACCESS_DENIED);
     }
 }

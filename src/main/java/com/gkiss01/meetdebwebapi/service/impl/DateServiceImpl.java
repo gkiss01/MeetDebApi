@@ -5,6 +5,8 @@ import com.gkiss01.meetdebwebapi.repository.DateRepository;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.repository.VoteRepository;
 import com.gkiss01.meetdebwebapi.service.DateService;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +30,10 @@ public class DateServiceImpl implements DateService {
     @Override
     public List<Date> createDate(Long eventId, OffsetDateTime dateTime, UserWithId userDetails) {
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         if (dateRepository.existsByEventIdAndDate(eventId, dateTime))
-            throw new RuntimeException("Date is already created!");
+            throw new CustomRuntimeException(ErrorCodes.DATE_ALREADY_CREATED);
 
         Date date = new Date(eventId, dateTime);
         dateRepository.save(date);
@@ -44,7 +46,7 @@ public class DateServiceImpl implements DateService {
         Date date = dateRepository.findByEventIdAndDate(eventId, dateTime);
 
         if (date == null)
-            throw new RuntimeException("Date not found!");
+            throw new CustomRuntimeException(ErrorCodes.DATE_NOT_FOUND);
 
         voteRepository.deleteById_DateId(date.getId());
         dateRepository.delete(date);
@@ -56,7 +58,7 @@ public class DateServiceImpl implements DateService {
         Date date = dateRepository.findDateById(dateId);
 
         if (date == null)
-            throw new RuntimeException("Date not found!");
+            throw new CustomRuntimeException(ErrorCodes.DATE_NOT_FOUND);
 
         voteRepository.deleteById_DateId(dateId);
         dateRepository.delete(date);
@@ -65,7 +67,7 @@ public class DateServiceImpl implements DateService {
     @Override
     public List<Date> getDates(Long eventId, UserWithId userDetails) {
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         return dateRepository.findDateByEventIdOrderByDateCustom(eventId, userDetails.getUserId());
     }

@@ -5,6 +5,8 @@ import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
 import com.gkiss01.meetdebwebapi.service.UserService;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ public class UserController {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(userId))
-            throw new RuntimeException("Access is denied!");
+            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
 
         User user = userService.updateUser(userId, userRequest);
         return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();

@@ -1,5 +1,6 @@
 package com.gkiss01.meetdebwebapi.exception;
 
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.Utils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -15,6 +16,6 @@ public class UnAuthorizedHandler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        Utils.errorResponse(httpServletRequest, httpServletResponse, "User is disabled or not valid!");
+        Utils.errorResponse(httpServletRequest, httpServletResponse, ErrorCodes.USER_DISABLED_NOT_VALID);
     }
 }

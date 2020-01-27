@@ -3,6 +3,8 @@ package com.gkiss01.meetdebwebapi.service.impl;
 import com.gkiss01.meetdebwebapi.repository.EventRepository;
 import com.gkiss01.meetdebwebapi.service.FileService;
 import com.gkiss01.meetdebwebapi.utils.CustomFileNotFoundException;
+import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
+import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.ImageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,25 +37,25 @@ public class FileServiceImpl implements FileService {
         try {
             Files.createDirectories(fileStorageLocation);
         } catch (Exception e) {
-            throw new RuntimeException("Could not create directory!");
+            throw new CustomRuntimeException(ErrorCodes.COULD_NOT_CREATE_DIRECTORY);
         }
     }
 
     public void storeFile(Long eventId, MultipartFile file) {
         if (!eventRepository.existsEventById(eventId))
-            throw new RuntimeException("Event not found!");
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         try {
             if (StringUtils.cleanPath(file.getOriginalFilename()).contains(".."))
-                throw new RuntimeException("Filename is invalid!");
+                throw new CustomRuntimeException(ErrorCodes.FILENAME_INVALID);
 
             Path targetLocation = fileStorageLocation.resolve(eventId.toString().concat(".jpeg"));
             boolean result = ImageConverter.convertFormat(file.getInputStream(), targetLocation.toString(), "jpeg");
             if (!result)
-                throw new RuntimeException("Could not convert image!");
+                throw new CustomRuntimeException(ErrorCodes.COULD_NOT_CONVERT_IMAGE);
         }
         catch (IOException ex) {
-            throw new RuntimeException("Upload failed!");
+            throw new CustomRuntimeException(ErrorCodes.UPLOAD_FAILED);
         }
     }
 
@@ -62,10 +64,10 @@ public class FileServiceImpl implements FileService {
             Resource resource = new UrlResource(fileStorageLocation.resolve(eventId.toString().concat(".jpeg")).normalize().toUri());
 
             if (resource.exists()) return resource;
-            else throw new CustomFileNotFoundException("File not found!");
+            else throw new CustomFileNotFoundException(ErrorCodes.FILE_NOT_FOUND);
         }
         catch (MalformedURLException e) {
-            throw new CustomFileNotFoundException("File not found!");
+            throw new CustomFileNotFoundException(ErrorCodes.FILE_NOT_FOUND);
         }
     }
 }
