@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class AccessIsDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
         Utils.errorResponse(httpServletRequest, httpServletResponse, ErrorCodes.ACCESS_DENIED);
     }
 }

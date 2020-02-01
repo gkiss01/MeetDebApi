@@ -80,6 +80,12 @@ public class UserController {
         return GenericResponse.builder().error(false).users(userResponses).build();
     }
 
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping(path = "/check", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public GenericResponse checkUser() {
+        return GenericResponse.builder().error(false).message("User is active!").build();
+    }
+
     @GetMapping(path = "/confirm-account", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse confirmUser(@RequestParam("token") String token) {
         userService.confirmUser(token);

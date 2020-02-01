@@ -15,7 +15,7 @@ import java.io.IOException;
 public class UnAuthorizedHandler implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+    public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         Utils.errorResponse(httpServletRequest, httpServletResponse, ErrorCodes.USER_DISABLED_OR_NOT_VALID);
     }
 }

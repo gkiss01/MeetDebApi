@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Getter
 public class UserWithId extends User {
-    private Long userId;
+    private final Long userId;
 
     public UserWithId(Long userId, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);

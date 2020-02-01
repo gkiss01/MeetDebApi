@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
             throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         try {
-            if (StringUtils.cleanPath(file.getOriginalFilename()).contains(".."))
+            if (file.getOriginalFilename() != null && StringUtils.cleanPath(file.getOriginalFilename()).contains(".."))
                 throw new CustomRuntimeException(ErrorCodes.FILENAME_INVALID);
 
             Path targetLocation = fileStorageLocation.resolve(eventId.toString().concat(".jpeg"));
