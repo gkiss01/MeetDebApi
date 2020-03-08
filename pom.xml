@@ -54,13 +54,21 @@
             <version>2.10.1</version>
         </dependency>
 
-        <!-- MySQL csatlakozás biztosítása -->
+        <!-- H2 adatbázis implementáció -->
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+            <version>1.4.200</version>
+        </dependency>
+
+        <!-- MySQL csatlakozás biztosítása -->
+        <!--<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
             <version>8.0.18</version>
-        </dependency>
+        </dependency>-->
 
         <!-- Lombok használata kódok generálásához -->
         <dependency>
