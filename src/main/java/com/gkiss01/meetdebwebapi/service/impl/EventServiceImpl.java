@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
 
         event.setDate(eventRequest.getDate());
         event.setVenue(eventRequest.getVenue());
-        event.setLabels(eventRequest.getLabels());
+        event.setDescription(eventRequest.getDescription());
 
         eventRepository.save(event);
         return eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());

@@ -32,8 +32,11 @@ public class Event {
 
     @Column(nullable = false)
     @Type(type = "text")
-    @NotBlank(message = "Labels are required!")
-    private String labels;
+    @NotBlank(message = "Description is required!")
+    private String description;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean reported;
 
     @Column(nullable = false)
     private Long userId;

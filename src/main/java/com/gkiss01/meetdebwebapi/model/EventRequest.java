@@ -22,7 +22,7 @@ public class EventRequest {
     @NotBlank(message = "Venue is required!")
     private String venue;
 
-    @NotBlank(message = "Labels are required!")
+    @NotBlank(message = "Description is required!")
     @Size(min = 5, message = "Minimum description length is 5 characters!")
-    private String labels;
+    private String description;
 }

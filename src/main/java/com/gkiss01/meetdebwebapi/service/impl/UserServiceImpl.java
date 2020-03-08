@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepository.save(confirmationToken);
 
-        emailService.sendConfirmationMessage(user.getEmail(), "http://172.17.172.157:8080/users/confirm-account?token=" + confirmationToken.getToken());
+        emailService.sendConfirmationMessage(user.getEmail(), "http://172.21.68.28:8080/users/confirm-account?token=" + confirmationToken.getToken());
         return user;
     }
 

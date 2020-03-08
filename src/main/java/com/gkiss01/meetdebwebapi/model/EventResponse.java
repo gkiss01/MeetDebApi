@@ -20,7 +20,9 @@ public class EventResponse {
 
     private String venue;
 
-    private String labels;
+    private String description;
+
+    private Boolean reported;
 
     private Long participants;
 
