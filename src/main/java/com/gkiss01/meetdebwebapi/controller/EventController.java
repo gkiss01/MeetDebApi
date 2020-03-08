@@ -88,4 +88,12 @@ public class EventController {
         eventEntities.forEach(e -> eventResponses.add(modelMapper.map(e, EventResponse.class)));
         return GenericResponse.builder().error(false).events(eventResponses).build();
     }
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping(path = "/reports/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public GenericResponse reportEvent(@PathVariable Long eventId) {
+        eventService.reportEvent(eventId);
+
+        return GenericResponse.builder().error(false).message("Event reported!").build();
+    }
 }

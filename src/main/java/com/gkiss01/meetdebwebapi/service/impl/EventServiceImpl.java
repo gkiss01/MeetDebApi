@@ -104,4 +104,18 @@ public class EventServiceImpl implements EventService {
 
         return eventEntities;
     }
+
+    @Override
+    public void reportEvent(Long eventId) {
+        Event event = eventRepository.findEventById(eventId);
+
+        if (event == null)
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
+
+        if (!event.getReported()) {
+            event.setReported(true);
+
+            eventRepository.save(event);
+        }
+    }
 }
