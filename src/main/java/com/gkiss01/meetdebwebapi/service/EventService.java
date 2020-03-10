@@ -13,4 +13,5 @@ public interface EventService {
     Event getEvent(Long eventId, UserWithId userDetails);
     List<Event> getEvents(int page, int limit, UserWithId userDetails);
     void reportEvent(Long eventId);
+    Event removeReport(Long eventId, UserWithId userDetails);
 }

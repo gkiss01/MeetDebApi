@@ -47,9 +47,12 @@ public class EventController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @PutMapping(path = "/{eventId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+    @PostMapping(path = "/update/{eventId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse updateEvent(@PathVariable Long eventId, @Valid @RequestBody EventRequest eventRequest, Authentication authentication) {
+    public GenericResponse updateEvent(@PathVariable Long eventId,
+                                       @RequestPart("event") @Valid EventRequest eventRequest,
+                                       @RequestPart(value = "file", required = false) MultipartFile file,
+                                       Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Event event = eventService.updateEvent(eventId, eventRequest, userDetails);
@@ -62,7 +65,7 @@ public class EventController {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         eventService.deleteEvent(eventId, userDetails);
-        return GenericResponse.builder().error(false).message("Event deleted!").build();
+        return GenericResponse.builder().error(false).withId(eventId).message("Event deleted!").build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -90,10 +93,19 @@ public class EventController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping(path = "/reports/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @GetMapping(path = "/reports-add/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public GenericResponse reportEvent(@PathVariable Long eventId) {
         eventService.reportEvent(eventId);
 
         return GenericResponse.builder().error(false).message("Event reported!").build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/reports-remove/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public GenericResponse removeReport(@PathVariable Long eventId, Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        Event event = eventService.removeReport(eventId, userDetails);
+        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
     }
 }

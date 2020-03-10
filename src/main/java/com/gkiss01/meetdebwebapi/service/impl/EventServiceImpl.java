@@ -51,7 +51,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event updateEvent(Long eventId, EventRequest eventRequest, UserWithId userDetails) {
-        Event event = eventRepository.findEventById(eventId);
+        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 
         if (event == null)
             throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
@@ -59,12 +59,13 @@ public class EventServiceImpl implements EventService {
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
             throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
 
+        event.setName(eventRequest.getName());
         event.setDate(eventRequest.getDate());
         event.setVenue(eventRequest.getVenue());
         event.setDescription(eventRequest.getDescription());
 
         eventRepository.save(event);
-        return eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+        return event;
     }
 
     @Override
@@ -117,5 +118,20 @@ public class EventServiceImpl implements EventService {
 
             eventRepository.save(event);
         }
+    }
+
+    @Override
+    public Event removeReport(Long eventId, UserWithId userDetails) {
+        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+
+        if (event == null)
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
+
+        if (event.getReported()) {
+            event.setReported(false);
+
+            eventRepository.save(event);
+        }
+        return event;
     }
 }

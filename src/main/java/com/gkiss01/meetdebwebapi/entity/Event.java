@@ -36,7 +36,7 @@ public class Event {
     private String description;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean reported;
+    private Boolean reported = false;
 
     @Column(nullable = false)
     private Long userId;
