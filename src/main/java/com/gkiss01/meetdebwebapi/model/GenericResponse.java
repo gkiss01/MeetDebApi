@@ -27,6 +27,9 @@ public class GenericResponse {
     private String message;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Long withId;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private UserResponse user;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

@@ -14,6 +14,8 @@ public class EventResponse {
 
     private String username;
 
+    private Long userId;
+
     private String name;
 
     private OffsetDateTime date;
