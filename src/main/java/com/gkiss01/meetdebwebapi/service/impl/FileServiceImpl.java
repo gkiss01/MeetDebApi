@@ -70,4 +70,16 @@ public class FileServiceImpl implements FileService {
             throw new CustomFileNotFoundException(ErrorCodes.FILE_NOT_FOUND);
         }
     }
+
+    @Override
+    public void deleteFile(Long eventId) {
+        if (!eventRepository.existsEventById(eventId))
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
+
+        Path location = fileStorageLocation.resolve(eventId.toString().concat(".jpeg"));
+        try {
+            Files.delete(location);
+        }
+        catch (IOException ignored) { }
+    }
 }

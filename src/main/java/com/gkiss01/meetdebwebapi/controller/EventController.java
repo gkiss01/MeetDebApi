@@ -64,6 +64,7 @@ public class EventController {
     public GenericResponse deleteEvent(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
+        fileService.deleteFile(eventId);
         eventService.deleteEvent(eventId, userDetails);
         return GenericResponse.builder().error(false).withId(eventId).message("Event deleted!").build();
     }
