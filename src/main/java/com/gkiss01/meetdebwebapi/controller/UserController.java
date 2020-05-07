@@ -39,17 +39,27 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+    @PutMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse updateUser(@PathVariable Long userId, @Valid @RequestBody UserRequest userRequest, Authentication authentication) {
+    public GenericResponse updateUser(@Valid @RequestBody UserRequest userRequest, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(userId))
-            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
-
-        User user = userService.updateUser(userId, userRequest);
+        User user = userService.updateUser(userDetails.getUserId(), userRequest);
         return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
     }
+
+//    @PreAuthorize("hasRole('CLIENT')")
+//    @PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+//            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//    public GenericResponse updateUser(@PathVariable(required = false) Long userId, @Valid @RequestBody UserRequest userRequest, Authentication authentication) {
+//        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+//
+//        if (userId != null && !userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(userId))
+//            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
+//
+//        User user = userService.updateUser(userId != null ? userId : userDetails.getUserId(), userRequest);
+//        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+//    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

@@ -39,7 +39,7 @@ public class DateController {
 
         if (dateTime == null) dateService.deleteDate(id);
         else dateService.deleteDate(id, dateTime);
-        return GenericResponse.builder().error(false).message("Date deleted!").build();
+        return GenericResponse.builder().error(false).withId(id).message("Date deleted!").build();
     }
 
     @PreAuthorize("hasRole('CLIENT')")
