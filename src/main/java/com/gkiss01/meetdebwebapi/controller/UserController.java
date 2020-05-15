@@ -92,11 +92,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(path = "/check", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse checkUser(Authentication authentication) {
+    public UserResponse checkUser(Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         User user = userService.getUser(userDetails.getUserId());
-        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @GetMapping(path = "/confirm-account", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
