@@ -71,16 +71,16 @@ public class EventController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse getEvent(@PathVariable Long eventId, Authentication authentication) {
+    public EventResponse getEvent(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Event event = eventService.getEvent(eventId, userDetails);
-        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+        return modelMapper.map(event, EventResponse.class);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse getEvents(@RequestParam(value = "page", defaultValue = "0") int page,
+    public List<EventResponse> getEvents(@RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "limit", defaultValue = "25") int limit,
                                      Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
@@ -90,7 +90,7 @@ public class EventController {
         List<EventResponse> eventResponses = new ArrayList<>();
 
         eventEntities.forEach(e -> eventResponses.add(modelMapper.map(e, EventResponse.class)));
-        return GenericResponse.builder().error(false).events(eventResponses).build();
+        return eventResponses;
     }
 
     @PreAuthorize("hasRole('CLIENT')")

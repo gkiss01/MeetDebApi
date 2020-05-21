@@ -32,6 +32,26 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     @Override
     @Transactional
+    public Event modifyParticipation(Long eventId, UserWithId userDetails) {
+        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+
+        if (event == null)
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
+
+        if (event.getAccepted()) {
+            Participant participant = participantRepository.findParticipantById_EventIdAndId_UserId(eventId, userDetails.getUserId());
+            participantRepository.delete(participant);
+        } else {
+            Participant participant = new Participant(new ParticipantId(eventId, userDetails.getUserId()), null);
+            voteRepository.deleteByEventIdAndUserId(eventId, userDetails.getUserId());
+            participantRepository.save(participant);
+        }
+
+        return eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+    }
+
+    @Override
+    @Transactional
     public Event createParticipant(Long eventId, UserWithId userDetails) {
         Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
 

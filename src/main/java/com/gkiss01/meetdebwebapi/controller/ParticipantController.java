@@ -29,12 +29,21 @@ public class ParticipantController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse createParticipant(@PathVariable Long eventId, Authentication authentication) {
+    public EventResponse createParticipant(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Event event = participantService.createParticipant(eventId, userDetails);
-        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+        Event event = participantService.modifyParticipation(eventId, userDetails);
+        return modelMapper.map(event, EventResponse.class);
     }
+
+//    @PreAuthorize("hasRole('CLIENT')")
+//    @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//    public GenericResponse createParticipant(@PathVariable Long eventId, Authentication authentication) {
+//        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+//
+//        Event event = participantService.createParticipant(eventId, userDetails);
+//        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+//    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -54,7 +63,7 @@ public class ParticipantController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse getParticipants(@PathVariable Long eventId,
+    public List<ParticipantResponse> getParticipants(@PathVariable Long eventId,
                                            @RequestParam(value = "page", defaultValue = "0") int page,
                                            @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
@@ -66,6 +75,6 @@ public class ParticipantController {
             ParticipantResponse participantResponse = new ParticipantResponse(null, e.getId().getUserId(), e.getUsername());
             participantResponses.add(participantResponse);
         });
-        return GenericResponse.builder().error(false).participants(participantResponses).build();
+        return participantResponses;
     }
 }

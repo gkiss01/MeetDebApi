@@ -7,6 +7,7 @@ import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import java.util.List;
 
 public interface ParticipantService {
+    Event modifyParticipation(Long eventId, UserWithId userDetails);
     Event createParticipant(Long eventId, UserWithId userDetails);
     Event deleteParticipant(Long eventId, UserWithId userDetails);
     Event deleteParticipant(Long eventId, Long userId);

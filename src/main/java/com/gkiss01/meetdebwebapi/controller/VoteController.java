@@ -21,11 +21,10 @@ public class VoteController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{dateId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse createVote(@PathVariable Long dateId, Authentication authentication) {
+    public List<Date> createVote(@PathVariable Long dateId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        List<Date> dateEntities = voteService.createVote(dateId, userDetails);
-        return GenericResponse.builder().error(false).dates(dateEntities).build();
+        return voteService.createVote(dateId, userDetails);
     }
 
     @PreAuthorize("hasRole('CLIENT')")

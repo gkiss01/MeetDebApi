@@ -5,8 +5,6 @@ import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
 import com.gkiss01.meetdebwebapi.service.UserService;
-import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
-import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_ADMIN;
 
 @RestController
 @RequestMapping("users")
@@ -33,9 +29,9 @@ public class UserController {
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse createUser(@Valid @RequestBody UserRequest userRequest) {
+    public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) {
         User user = userService.createUser(userRequest);
-        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
