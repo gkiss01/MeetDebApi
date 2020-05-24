@@ -3,7 +3,7 @@ package com.gkiss01.meetdebwebapi.controller;
 import com.gkiss01.meetdebwebapi.entity.Event;
 import com.gkiss01.meetdebwebapi.model.EventRequest;
 import com.gkiss01.meetdebwebapi.model.EventResponse;
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.model.SuccessResponse;
 import com.gkiss01.meetdebwebapi.service.EventService;
 import com.gkiss01.meetdebwebapi.service.FileService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
@@ -34,7 +34,7 @@ public class EventController {
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse createEvent(@RequestPart("event") @Valid EventRequest eventRequest,
+    public EventResponse createEvent(@RequestPart("event") @Valid EventRequest eventRequest,
                                        @RequestPart(value = "file", required = false) MultipartFile file,
                                        Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
@@ -42,31 +42,30 @@ public class EventController {
         Event event = eventService.createEvent(eventRequest, userDetails);
         if (file != null && !file.isEmpty())
             fileService.storeFile(event.getId(), file);
-
-        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+        return modelMapper.map(event, EventResponse.class);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/update/{eventId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse updateEvent(@PathVariable Long eventId,
+    public EventResponse updateEvent(@PathVariable Long eventId,
                                        @RequestPart("event") @Valid EventRequest eventRequest,
                                        @RequestPart(value = "file", required = false) MultipartFile file,
                                        Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Event event = eventService.updateEvent(eventId, eventRequest, userDetails);
-        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+        return modelMapper.map(event, EventResponse.class);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse deleteEvent(@PathVariable Long eventId, Authentication authentication) {
+    public SuccessResponse<Long> deleteEvent(@PathVariable Long eventId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        fileService.deleteFile(eventId);
         eventService.deleteEvent(eventId, userDetails);
-        return GenericResponse.builder().error(false).withId(eventId).message("Event deleted!").build();
+        fileService.deleteFile(eventId);
+        return new SuccessResponse<>(eventId);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -95,18 +94,15 @@ public class EventController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(path = "/reports-add/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse reportEvent(@PathVariable Long eventId) {
+    public SuccessResponse<Long> reportEvent(@PathVariable Long eventId) {
         eventService.reportEvent(eventId);
-
-        return GenericResponse.builder().error(false).message("Event reported!").build();
+        return new SuccessResponse<>(eventId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/reports-remove/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse removeReport(@PathVariable Long eventId, Authentication authentication) {
-        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-
-        Event event = eventService.removeReport(eventId, userDetails);
-        return GenericResponse.builder().error(false).event(modelMapper.map(event, EventResponse.class)).build();
+    public SuccessResponse<Long> removeReport(@PathVariable Long eventId) {
+        eventService.removeReport(eventId);
+        return new SuccessResponse<>(eventId);
     }
 }

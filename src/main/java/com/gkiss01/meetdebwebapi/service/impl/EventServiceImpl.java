@@ -121,8 +121,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event removeReport(Long eventId, UserWithId userDetails) {
-        Event event = eventRepository.findEventByIdCustom(eventId, userDetails.getUserId());
+    public void removeReport(Long eventId) {
+        Event event = eventRepository.findEventById(eventId);
 
         if (event == null)
             throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
@@ -132,6 +132,5 @@ public class EventServiceImpl implements EventService {
 
             eventRepository.save(event);
         }
-        return event;
     }
 }

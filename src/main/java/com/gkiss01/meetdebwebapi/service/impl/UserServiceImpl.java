@@ -2,7 +2,6 @@ package com.gkiss01.meetdebwebapi.service.impl;
 
 import com.gkiss01.meetdebwebapi.entity.ConfirmationToken;
 import com.gkiss01.meetdebwebapi.entity.User;
-import com.gkiss01.meetdebwebapi.entity.UserRequestType;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.*;
 import com.gkiss01.meetdebwebapi.service.UserService;
@@ -86,13 +85,12 @@ public class UserServiceImpl implements UserService {
         if ((tempUser = userRepository.findUserByEmail(userRequest.getEmail())) != null && !tempUser.getId().equals(userId))
             throw new CustomRuntimeException(ErrorCodes.EMAIL_ALREADY_IN_USE);
 
-        if (userRequest.getType() == UserRequestType.emailUpdate.ordinal()) user.setEmail(userRequest.getEmail());
-        else if (userRequest.getType() == UserRequestType.passwordUpdate.ordinal()) user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
-        //user.setName(userRequest.getName());
-        //if (userRequest.getRoles() != null) user.setRoles(userRequest.getRoles());
+        if (userRequest.getEmail() != null) user.setEmail(userRequest.getEmail());
+        if (userRequest.getPassword() != null) user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
+        if (userRequest.getName() != null) user.setEmail(userRequest.getName());
+        if (userRequest.getRoles() != null) user.setRoles(userRequest.getRoles());
 
-        user = userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.gkiss01.meetdebwebapi.controller;
 
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.model.SuccessResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
 import com.gkiss01.meetdebwebapi.service.UserService;
@@ -37,12 +38,22 @@ public class UserController {
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse updateUser(@Valid @RequestBody UserRequest userRequest, Authentication authentication) {
+    public UserResponse updateUser(@RequestBody UserRequest userRequest, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         User user = userService.updateUser(userDetails.getUserId(), userRequest);
-        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+        return modelMapper.map(user, UserResponse.class);
     }
+
+//    @PreAuthorize("hasRole('CLIENT')")
+//    @PutMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+//            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//    public GenericResponse updateUser(@Valid @RequestBody UserRequest userRequest, Authentication authentication) {
+//        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+//
+//        User user = userService.updateUser(userDetails.getUserId(), userRequest);
+//        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+//    }
 
 //    @PreAuthorize("hasRole('CLIENT')")
 //    @PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
@@ -57,11 +68,20 @@ public class UserController {
 //        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
 //    }
 
+    @PreAuthorize("hasRole('CLIENT')")
+    @DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public SuccessResponse<Long> deleteUser(Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        userService.deleteUser(userDetails.getUserId());
+        return new SuccessResponse<>(userDetails.getUserId());
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse deleteUser(@PathVariable Long userId) {
+    public SuccessResponse<Long> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
-        return GenericResponse.builder().error(false).message("User deleted!").build();
+        return new SuccessResponse<>(userId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

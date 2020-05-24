@@ -26,7 +26,7 @@ public class UserRequest {
     @Size(min = 4, max = 80, message = "Name must be between 4 and 80 characters long!")
     private String name;
 
-    private Integer type;
+    //private Integer type;
 
     //@NotNull(message = "Roles are required!")
     private Set<Role> roles;
