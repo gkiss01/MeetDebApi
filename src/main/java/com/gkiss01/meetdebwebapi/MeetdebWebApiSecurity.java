@@ -36,7 +36,7 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.POST, API_URL_USER).permitAll()
-                .antMatchers(API_URL_USER + "/confirm-account").permitAll()
+                .antMatchers(HttpMethod.GET, API_URL_USER + "/confirm").permitAll()
                 .antMatchers(HttpMethod.POST, API_URL_EVENT).permitAll()
                 .antMatchers(HttpMethod.GET, API_URL_IMAGE).permitAll()
                 .anyRequest().authenticated()

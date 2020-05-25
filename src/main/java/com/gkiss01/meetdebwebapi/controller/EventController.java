@@ -49,7 +49,7 @@ public class EventController {
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public EventResponse updateEvent(@RequestPart("event") @Valid EventRequest eventRequest,
+    public EventResponse updateEvent(@RequestPart("event") EventRequest eventRequest,
                                      @RequestPart(value = "file", required = false) MultipartFile file,
                                      Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();

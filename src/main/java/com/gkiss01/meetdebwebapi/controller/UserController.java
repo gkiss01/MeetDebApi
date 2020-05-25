@@ -1,7 +1,6 @@
 package com.gkiss01.meetdebwebapi.controller;
 
 import com.gkiss01.meetdebwebapi.entity.User;
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.model.SuccessResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.model.UserResponse;
@@ -35,38 +34,21 @@ public class UserController {
         return modelMapper.map(user, UserResponse.class);
     }
 
+    @GetMapping(path = "/confirm", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public UserResponse confirmUser(@RequestParam("token") String token) {
+        User user = userService.confirmUser(token);
+        return modelMapper.map(user, UserResponse.class);
+    }
+
     @PreAuthorize("hasRole('CLIENT')")
     @PutMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public UserResponse updateUser(@RequestBody UserRequest userRequest, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        User user = userService.updateUser(userDetails.getUserId(), userRequest);
+        User user = userService.updateUser(userDetails.getUserId(), userRequest, userDetails);
         return modelMapper.map(user, UserResponse.class);
     }
-
-//    @PreAuthorize("hasRole('CLIENT')")
-//    @PutMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
-//            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-//    public GenericResponse updateUser(@Valid @RequestBody UserRequest userRequest, Authentication authentication) {
-//        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-//
-//        User user = userService.updateUser(userDetails.getUserId(), userRequest);
-//        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
-//    }
-
-//    @PreAuthorize("hasRole('CLIENT')")
-//    @PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
-//            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-//    public GenericResponse updateUser(@PathVariable(required = false) Long userId, @Valid @RequestBody UserRequest userRequest, Authentication authentication) {
-//        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-//
-//        if (userId != null && !userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(userId))
-//            throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
-//
-//        User user = userService.updateUser(userId != null ? userId : userDetails.getUserId(), userRequest);
-//        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
-//    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @DeleteMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -75,6 +57,25 @@ public class UserController {
 
         userService.deleteUser(userDetails.getUserId());
         return new SuccessResponse<>(userDetails.getUserId());
+    }
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping(path = "/me", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public UserResponse checkUser(Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        User user = userService.getUser(userDetails.getUserId());
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(path = "/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public UserResponse updateUser(@PathVariable Long userId, @RequestBody UserRequest userRequest, Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        User user = userService.updateUser(userId, userRequest, userDetails);
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -86,38 +87,20 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse getUser(@PathVariable Long userId) {
+    public UserResponse getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
-        return GenericResponse.builder().error(false).user(modelMapper.map(user, UserResponse.class)).build();
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
-                                       @RequestParam(value = "limit", defaultValue = "25") int limit) {
+    public List<UserResponse> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
+                                        @RequestParam(value = "limit", defaultValue = "25") int limit) {
         if (page > 0) page--;
         List<User> userEntities = userService.getUsers(page, limit);
         List<UserResponse> userResponses = new ArrayList<>();
 
-        userEntities.forEach(u -> {
-            UserResponse userResponse = modelMapper.map(u, UserResponse.class);
-            userResponses.add(userResponse);
-        });
-        return GenericResponse.builder().error(false).users(userResponses).build();
-    }
-
-    @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping(path = "/check", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public UserResponse checkUser(Authentication authentication) {
-        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-
-        User user = userService.getUser(userDetails.getUserId());
-        return modelMapper.map(user, UserResponse.class);
-    }
-
-    @GetMapping(path = "/confirm-account", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse confirmUser(@RequestParam("token") String token) {
-        userService.confirmUser(token);
-        return GenericResponse.builder().error(false).message("User verified!").build();
+        userEntities.forEach(u -> userResponses.add(modelMapper.map(u, UserResponse.class)));
+        return userResponses;
     }
 }

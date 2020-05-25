@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_ADMIN;
 import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_CLIENT;
 
 @Service
@@ -70,12 +71,12 @@ public class UserServiceImpl implements UserService {
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenRepository.save(confirmationToken);
 
-        emailService.sendConfirmationMessage(user.getEmail(), "http://172.21.68.28:8080/users/confirm-account?token=" + confirmationToken.getToken());
+        emailService.sendConfirmationMessage(user.getEmail(), "http://192.168.1.106:8080/users/confirm?token=" + confirmationToken.getToken());
         return user;
     }
 
     @Override
-    public User updateUser(Long userId, UserRequest userRequest) {
+    public User updateUser(Long userId, UserRequest userRequest, UserWithId userDetails) {
         User user = userRepository.findUserById(userId);
 
         if (user == null)
@@ -87,8 +88,8 @@ public class UserServiceImpl implements UserService {
 
         if (userRequest.getEmail() != null) user.setEmail(userRequest.getEmail());
         if (userRequest.getPassword() != null) user.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
-        if (userRequest.getName() != null) user.setEmail(userRequest.getName());
-        if (userRequest.getRoles() != null) user.setRoles(userRequest.getRoles());
+        if (userRequest.getName() != null) user.setName(userRequest.getName());
+        if (userDetails.getAuthorities().contains(ROLE_ADMIN) && userRequest.getRoles() != null) user.setRoles(userRequest.getRoles());
 
         return userRepository.save(user);
     }
@@ -126,16 +127,11 @@ public class UserServiceImpl implements UserService {
         Pageable pageableRequest = PageRequest.of(page, limit);
 
         Page<User> usersPage = userRepository.findAll(pageableRequest);
-        List<User> userEntities = usersPage.toList();
-
-        if (userEntities.isEmpty())
-            throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
-
-        return userEntities;
+        return usersPage.toList();
     }
 
     @Override
-    public void confirmUser(String token) {
+    public User confirmUser(String token) {
         ConfirmationToken confirmationToken = confirmationTokenRepository.findConfirmationTokenByToken(token);
 
         if (confirmationToken == null)
@@ -147,7 +143,7 @@ public class UserServiceImpl implements UserService {
         User user = confirmationToken.getUser();
         user.setEnabled(true);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
