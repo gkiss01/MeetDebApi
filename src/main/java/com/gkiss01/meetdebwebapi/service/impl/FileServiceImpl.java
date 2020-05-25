@@ -74,7 +74,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(Long eventId) {
         if (!eventRepository.existsEventById(eventId)) return;
-            //throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
 
         Path location = fileStorageLocation.resolve(eventId.toString().concat(".jpeg"));
         try {

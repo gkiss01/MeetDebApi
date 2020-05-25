@@ -6,6 +6,5 @@ import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import java.util.List;
 
 public interface VoteService {
-    List<Date> createVote(Long dateId, UserWithId userDetails);
-    Date deleteVote(Long dateId, UserWithId userDetails);
+    List<Date> changeVote(Long dateId, UserWithId userDetails);
 }

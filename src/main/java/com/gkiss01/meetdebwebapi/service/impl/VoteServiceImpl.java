@@ -28,33 +28,23 @@ public class VoteServiceImpl implements VoteService {
     @Autowired
     private ParticipantRepository participantRepository;
 
-    @Override
     @Transactional
-    public List<Date> createVote(Long dateId, UserWithId userDetails) {
+    public List<Date> changeVote(Long dateId, UserWithId userDetails) {
         Date date = dateRepository.findDateByIdCustom(dateId, userDetails.getUserId());
 
         if (date == null)
             throw new CustomRuntimeException(ErrorCodes.DATE_NOT_FOUND);
 
-        if (date.getAccepted())
-            throw new CustomRuntimeException(ErrorCodes.VOTE_ALREADY_CREATED);
+        if (date.getAccepted()) {
+            Vote vote = voteRepository.findVoteById_DateIdAndId_UserId(dateId, userDetails.getUserId());
+            voteRepository.delete(vote);
+        } else {
+            Vote vote = new Vote(new VoteId(dateId, userDetails.getUserId()));
+            participantRepository.deleteById_EventIdAndId_UserId(date.getEventId(), userDetails.getUserId());
+            voteRepository.deleteByEventIdAndUserId(date.getEventId(), userDetails.getUserId());
+            voteRepository.save(vote);
+        }
 
-        Vote vote = new Vote(new VoteId(dateId, userDetails.getUserId()));
-        participantRepository.deleteById_EventIdAndId_UserId(date.getEventId(), userDetails.getUserId());
-        voteRepository.deleteByEventIdAndUserId(date.getEventId(), userDetails.getUserId());
-        voteRepository.save(vote);
         return dateRepository.findDateByEventIdOrderByDateCustom(date.getEventId(), userDetails.getUserId());
-    }
-
-    @Override
-    @Transactional
-    public Date deleteVote(Long dateId, UserWithId userDetails) {
-        Vote vote = voteRepository.findVoteById_DateIdAndId_UserId(dateId, userDetails.getUserId());
-
-        if (vote == null)
-            throw new CustomRuntimeException(ErrorCodes.VOTE_NOT_FOUND);
-
-        voteRepository.delete(vote);
-        return dateRepository.findDateByIdCustom(dateId, userDetails.getUserId());
     }
 }

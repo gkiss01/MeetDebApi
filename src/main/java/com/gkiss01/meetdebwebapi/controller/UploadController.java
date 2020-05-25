@@ -1,6 +1,6 @@
 package com.gkiss01.meetdebwebapi.controller;
 
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.model.SuccessResponse;
 import com.gkiss01.meetdebwebapi.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -18,15 +18,6 @@ public class UploadController {
     @Autowired
     private FileService fileService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(consumes = { "multipart/form-data" })
-    public GenericResponse writeFile(@PathVariable Long eventId,
-                                     @RequestParam("file") MultipartFile file) {
-
-        fileService.storeFile(eventId, file);
-        return GenericResponse.builder().error(false).message("Upload successful!").build();
-    }
-
     @ResponseBody
     @GetMapping
     public ResponseEntity<Resource> readFile(@PathVariable Long eventId) {
@@ -36,5 +27,20 @@ public class UploadController {
         headers.setContentType(MediaType.IMAGE_JPEG);
         headers.setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS));
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public SuccessResponse<Long> writeFile(@PathVariable Long eventId,
+                                           @RequestParam("file") MultipartFile file) {
+        fileService.storeFile(eventId, file);
+        return new SuccessResponse<>(eventId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    public SuccessResponse<Long> deleteFile(@PathVariable Long eventId) {
+        fileService.deleteFile(eventId);
+        return new SuccessResponse<>(eventId);
     }
 }

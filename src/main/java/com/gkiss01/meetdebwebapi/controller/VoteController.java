@@ -1,14 +1,16 @@
 package com.gkiss01.meetdebwebapi.controller;
 
 import com.gkiss01.meetdebwebapi.entity.Date;
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.service.VoteService;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,18 +23,9 @@ public class VoteController {
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{dateId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public List<Date> createVote(@PathVariable Long dateId, Authentication authentication) {
+    public List<Date> changeVote(@PathVariable Long dateId, Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        return voteService.createVote(dateId, userDetails);
-    }
-
-    @PreAuthorize("hasRole('CLIENT')")
-    @DeleteMapping(path = "/{dateId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse deleteVote(@PathVariable Long dateId, Authentication authentication) {
-        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-
-        Date date = voteService.deleteVote(dateId, userDetails);
-        return GenericResponse.builder().error(false).date(date).build();
+        return voteService.changeVote(dateId, userDetails);
     }
 }
