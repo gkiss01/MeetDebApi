@@ -42,18 +42,6 @@ public class DateServiceImpl implements DateService {
 
     @Override
     @Transactional
-    public void deleteDate(Long eventId, OffsetDateTime dateTime) {
-        Date date = dateRepository.findByEventIdAndDate(eventId, dateTime);
-
-        if (date == null)
-            throw new CustomRuntimeException(ErrorCodes.DATE_NOT_FOUND);
-
-        voteRepository.deleteById_DateId(date.getId());
-        dateRepository.delete(date);
-    }
-
-    @Override
-    @Transactional
     public void deleteDate(Long dateId) {
         Date date = dateRepository.findDateById(dateId);
 

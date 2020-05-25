@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface DateService {
     List<Date> createDate(Long eventId, OffsetDateTime dateTime, UserWithId userDetails);
-    void deleteDate(Long eventId, OffsetDateTime dateTime);
     void deleteDate(Long dateId);
     List<Date> getDates(Long eventId, UserWithId userDetails);
 }

@@ -24,21 +24,11 @@ public class DateController {
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public List<Date> createDate(@PathVariable Long eventId,
-                                      @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTime,
-                                      Authentication authentication) {
+                                 @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTime,
+                                 Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         return dateService.createDate(eventId, dateTime, userDetails);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public SuccessResponse<Long> deleteDate(@PathVariable Long id,
-                                      @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime dateTime) {
-
-        if (dateTime == null) dateService.deleteDate(id);
-        else dateService.deleteDate(id, dateTime);
-        return new SuccessResponse<>(id);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -47,5 +37,12 @@ public class DateController {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         return dateService.getDates(eventId, userDetails);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping(path = "/{dateId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public SuccessResponse<Long> deleteDate(@PathVariable Long dateId) {
+        dateService.deleteDate(dateId);
+        return new SuccessResponse<>(dateId);
     }
 }
