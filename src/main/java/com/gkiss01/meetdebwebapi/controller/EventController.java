@@ -32,11 +32,12 @@ public class EventController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public EventResponse createEvent(@RequestPart("event") @Valid EventRequest eventRequest,
-                                       @RequestPart(value = "file", required = false) MultipartFile file,
-                                       Authentication authentication) {
+                                     @RequestPart(value = "file", required = false) MultipartFile file,
+                                     Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         Event event = eventService.createEvent(eventRequest, userDetails);
@@ -46,26 +47,17 @@ public class EventController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @PostMapping(path = "/update/{eventId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
+    @PostMapping(path = "/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public EventResponse updateEvent(@PathVariable Long eventId,
-                                       @RequestPart("event") @Valid EventRequest eventRequest,
-                                       @RequestPart(value = "file", required = false) MultipartFile file,
-                                       Authentication authentication) {
+    public EventResponse updateEvent(@RequestPart("event") @Valid EventRequest eventRequest,
+                                     @RequestPart(value = "file", required = false) MultipartFile file,
+                                     Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
-        Event event = eventService.updateEvent(eventId, eventRequest, userDetails);
+        Event event = eventService.updateEvent(eventRequest.getId(), eventRequest, userDetails);
+        if (file != null && !file.isEmpty())
+            fileService.storeFile(eventRequest.getId(), file);
         return modelMapper.map(event, EventResponse.class);
-    }
-
-    @PreAuthorize("hasRole('CLIENT')")
-    @DeleteMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public SuccessResponse<Long> deleteEvent(@PathVariable Long eventId, Authentication authentication) {
-        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
-
-        eventService.deleteEvent(eventId, userDetails);
-        fileService.deleteFile(eventId);
-        return new SuccessResponse<>(eventId);
     }
 
     @PreAuthorize("hasRole('CLIENT')")
@@ -80,8 +72,8 @@ public class EventController {
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public List<EventResponse> getEvents(@RequestParam(value = "page", defaultValue = "0") int page,
-                                     @RequestParam(value = "limit", defaultValue = "25") int limit,
-                                     Authentication authentication) {
+                                         @RequestParam(value = "limit", defaultValue = "25") int limit,
+                                         Authentication authentication) {
         UserWithId userDetails = (UserWithId) authentication.getPrincipal();
 
         if (page > 0) page--;
@@ -93,14 +85,24 @@ public class EventController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping(path = "/reports-add/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public SuccessResponse<Long> reportEvent(@PathVariable Long eventId) {
-        eventService.reportEvent(eventId);
+    @DeleteMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public SuccessResponse<Long> deleteEvent(@PathVariable Long eventId, Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        eventService.deleteEvent(eventId, userDetails);
+        fileService.deleteFile(eventId);
+        return new SuccessResponse<>(eventId);
+    }
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping(path = "/reports/add/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public SuccessResponse<Long> createReport(@PathVariable Long eventId) {
+        eventService.createReport(eventId);
         return new SuccessResponse<>(eventId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(path = "/reports-remove/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @GetMapping(path = "/reports/remove/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public SuccessResponse<Long> removeReport(@PathVariable Long eventId) {
         eventService.removeReport(eventId);
         return new SuccessResponse<>(eventId);

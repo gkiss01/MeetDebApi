@@ -59,10 +59,10 @@ public class EventServiceImpl implements EventService {
         if (!userDetails.getAuthorities().contains(ROLE_ADMIN) && !userDetails.getUserId().equals(event.getUserId()))
             throw new CustomRuntimeException(ErrorCodes.ACCESS_DENIED);
 
-        event.setName(eventRequest.getName());
-        event.setDate(eventRequest.getDate());
-        event.setVenue(eventRequest.getVenue());
-        event.setDescription(eventRequest.getDescription());
+        if (eventRequest.getName() != null) event.setName(eventRequest.getName());
+        if (eventRequest.getDate() != null) event.setDate(eventRequest.getDate());
+        if (eventRequest.getVenue() != null) event.setVenue(eventRequest.getVenue());
+        if (eventRequest.getDescription() != null) event.setDescription(eventRequest.getDescription());
 
         eventRepository.save(event);
         return event;
@@ -98,16 +98,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getEvents(int page, int limit, UserWithId userDetails) {
         Pageable pageableRequest = PageRequest.of(page, limit);
-        List<Event> eventEntities = eventRepository.findAllByOrderByDateCustom(userDetails.getUserId(), pageableRequest);
 
-        if (eventEntities.isEmpty())
-            throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
-
-        return eventEntities;
+        return eventRepository.findAllByOrderByDateCustom(userDetails.getUserId(), pageableRequest);
     }
 
     @Override
-    public void reportEvent(Long eventId) {
+    public void createReport(Long eventId) {
         Event event = eventRepository.findEventById(eventId);
 
         if (event == null)
