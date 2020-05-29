@@ -4,7 +4,6 @@ import com.github.javafaker.Faker;
 import com.gkiss01.meetdebwebapi.entity.*;
 import com.gkiss01.meetdebwebapi.entity.idclass.ParticipantId;
 import com.gkiss01.meetdebwebapi.entity.idclass.VoteId;
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
 import com.gkiss01.meetdebwebapi.repository.*;
 import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
 import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashSet;
@@ -49,22 +49,21 @@ public class FakerController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/users/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateUsers(@PathVariable Long count) {
+    public String populateUsers(@PathVariable Long count) {
 
         Faker faker = new Faker(new Locale("hu"));
 
         for (long i = 0; i < count; ++i) {
             User user = new User(i, faker.internet().emailAddress(), bCryptPasswordEncoder.encode(faker.internet().password()), faker.name().fullName(), true, new HashSet<>(Collections.singletonList(ROLE_CLIENT)));
             user.setId(null);
-
             userRepository.save(user);
         }
-        return GenericResponse.builder().error(false).message(count + " user(s) added!").build();
+        return count + " user(s) added!";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/events/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateEvents(@PathVariable Long count) {
+    public String populateEvents(@PathVariable Long count) {
 
         Faker faker = new Faker(new Locale("hu"));
 
@@ -73,37 +72,18 @@ public class FakerController {
             if (userId == null)
                 throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
-            Event event = new Event(i, faker.funnyName().name(), faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC), faker.address().fullAddress(), faker.lorem().paragraph(5), false, userId, null, null, null, null);
-            event.setId(null);
+            OffsetDateTime offsetDateTime = faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC);
 
+            Event event = new Event(i, faker.funnyName().name(), offsetDateTime, faker.address().fullAddress(), faker.lorem().paragraph(5), false, userId, null, null, null, null);
+            event.setId(null);
             eventRepository.save(event);
         }
-        return GenericResponse.builder().error(false).message(count + " event(s) added!").build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(path = "/participants/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateParticipants(@PathVariable Long count) {
-
-        for (long i = 0; i < count; ++i) {
-            Long eventId = eventRepository.findEventIdByRandom();
-            if (eventId == null)
-                throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
-
-            Long userId = userRepository.findUserIdByRandom();
-            if (userId == null)
-                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
-
-            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
-
-            participantRepository.save(participant);
-        }
-        return GenericResponse.builder().error(false).message(count + " participant(s) added!").build();
+        return count + " event(s) added!";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/participants/{eventId}/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateParticipantsByEvent(@PathVariable Long eventId, @PathVariable Long count) {
+    public String populateParticipantsByEvent(@PathVariable Long eventId, @PathVariable Long count) {
 
         if (!eventRepository.existsEventById(eventId))
             throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
@@ -113,16 +93,57 @@ public class FakerController {
             if (userId == null)
                 throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
-            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
+            if (participantRepository.existsParticipantById_EventIdAndId_UserId(eventId, userId)) continue;
 
+            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
             participantRepository.save(participant);
         }
-        return GenericResponse.builder().error(false).message(count + " participant(s) added!").build();
+        return count + " participant(s) for event " + eventId + " added!";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/participants/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public String populateParticipants(@PathVariable Long count) {
+
+        for (long i = 0; i < count; ++i) {
+            Long userId = userRepository.findUserIdByRandom();
+            if (userId == null)
+                throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
+
+            Long eventId = eventRepository.findEventIdByRandom();
+            if (eventId == null)
+                throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
+
+            if (participantRepository.existsParticipantById_EventIdAndId_UserId(eventId, userId)) continue;
+
+            Participant participant = new Participant(new ParticipantId(eventId, userId), null);
+            participantRepository.save(participant);
+        }
+        return count + " participant(s) added!";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/dates/{eventId}/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public String populateDatesByEvent(@PathVariable Long eventId, @PathVariable Long count) {
+
+        if (!eventRepository.existsEventById(eventId))
+            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
+
+        Faker faker = new Faker(new Locale("hu"));
+
+        for (long i = 0; i < count; ++i) {
+            OffsetDateTime offsetDateTime = faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC);
+            if (dateRepository.existsByEventIdAndDate(eventId, offsetDateTime)) continue;
+
+            Date date = new Date(eventId, offsetDateTime);
+            dateRepository.save(date);
+        }
+        return count + " date(s) for event " + eventId + " added!";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/dates/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateDates(@PathVariable Long count) {
+    public String populateDates(@PathVariable Long count) {
 
         Faker faker = new Faker(new Locale("hu"));
 
@@ -131,33 +152,18 @@ public class FakerController {
             if (eventId == null)
                 throw new CustomRuntimeException(ErrorCodes.NO_EVENTS_FOUND);
 
-            Date date = new Date(eventId, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC));
+            OffsetDateTime offsetDateTime = faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC);
+            if (dateRepository.existsByEventIdAndDate(eventId, offsetDateTime)) continue;
 
+            Date date = new Date(eventId, offsetDateTime);
             dateRepository.save(date);
         }
-        return GenericResponse.builder().error(false).message(count + " date(s) added!").build();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(path = "/dates/{eventId}/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateDatesByEvent(@PathVariable Long eventId, @PathVariable Long count) {
-
-        if (!eventRepository.existsEventById(eventId))
-            throw new CustomRuntimeException(ErrorCodes.EVENT_NOT_FOUND);
-
-        Faker faker = new Faker(new Locale("hu"));
-
-        for (long i = 0; i < count; ++i) {
-            Date date = new Date(eventId, faker.date().future(31, TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC));
-
-            dateRepository.save(date);
-        }
-        return GenericResponse.builder().error(false).message(count + " date(s) added!").build();
+        return count + " date(s) added!";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/votes/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public GenericResponse populateVotes(@PathVariable Long count) {
+    public String populateVotes(@PathVariable Long count) {
 
         for (long i = 0; i < count; ++i) {
             Long dateId = dateRepository.findDateIdByRandom();
@@ -168,10 +174,11 @@ public class FakerController {
             if (userId == null)
                 throw new CustomRuntimeException(ErrorCodes.NO_USERS_FOUND);
 
-            Vote vote = new Vote(new VoteId(dateId, userId));
+            if (voteRepository.existsById_DateIdAndId_UserId(dateId, userId)) continue;
 
+            Vote vote = new Vote(new VoteId(dateId, userId));
             voteRepository.save(vote);
         }
-        return GenericResponse.builder().error(false).message(count + " vote(s) added!").build();
+        return count + " vote(s) added!";
     }
 }

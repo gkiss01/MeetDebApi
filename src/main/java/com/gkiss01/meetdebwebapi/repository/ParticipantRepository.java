@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface ParticipantRepository extends JpaRepository<Participant, ParticipantId> {
 
+    Boolean existsParticipantById_EventIdAndId_UserId(Long eventId, Long userId);
+
     Participant findParticipantById_EventIdAndId_UserId(Long eventId, Long userId);
 
     @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Participant(p.id, (SELECT u.name FROM User u WHERE u.id = p.id.userId) AS username) FROM Participant p WHERE p.id.eventId = :eventId")

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface VoteRepository extends JpaRepository<Vote, VoteId> {
 
+    Boolean existsById_DateIdAndId_UserId(Long dateId, Long userId);
+
     Vote findVoteById_DateIdAndId_UserId(Long dateId, Long userId);
 
     void deleteById_DateId(Long dateId);
