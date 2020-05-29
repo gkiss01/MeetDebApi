@@ -1,6 +1,6 @@
 package com.gkiss01.meetdebwebapi.exception;
 
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.model.ErrorResponse;
 import com.gkiss01.meetdebwebapi.utils.CustomFileNotFoundException;
 import com.gkiss01.meetdebwebapi.utils.CustomRuntimeException;
 import com.gkiss01.meetdebwebapi.utils.ErrorCodes;
@@ -32,13 +32,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
             errors.add(objectError.getDefaultMessage());
         }
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(ErrorCodes.BAD_REQUEST_FORMAT).errors(errors).build();
+        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.BAD_REQUEST_FORMAT).errors(errors).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
     public ResponseEntity<Object> handleMaxUploadSizeExceeded() {
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED)
+        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED)
                 .errors(Collections.singletonList(getErrorString(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED))).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -50,7 +50,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {CustomRuntimeException.class})
     public ResponseEntity<Object> handleCustomRuntimeException(CustomRuntimeException exception) {
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(exception.getErrorCode())
+        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(exception.getErrorCode())
                 .errors(Collections.singletonList(getErrorString(exception.getErrorCode()))).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -61,7 +61,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             throw exception;
         }
 
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(ErrorCodes.UNKNOWN)
+        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.UNKNOWN)
                 .errors(Collections.singletonList(exception.getLocalizedMessage())).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

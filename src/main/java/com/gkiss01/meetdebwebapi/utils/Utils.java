@@ -2,7 +2,7 @@ package com.gkiss01.meetdebwebapi.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.gkiss01.meetdebwebapi.model.GenericResponse;
+import com.gkiss01.meetdebwebapi.model.ErrorResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import java.util.Collections;
 
 public class Utils {
     public static void errorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ErrorCodes errorCode) throws IOException {
-        GenericResponse response = GenericResponse.builder().error(true).errorCode(errorCode)
+        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(errorCode)
                 .errors(Collections.singletonList(getErrorString(errorCode))).build();
         OutputStream out = httpServletResponse.getOutputStream();
 

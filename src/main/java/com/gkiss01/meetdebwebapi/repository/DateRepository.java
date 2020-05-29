@@ -14,8 +14,6 @@ public interface DateRepository extends JpaRepository<Date, Long> {
 
     Boolean existsByEventIdAndDate(Long eventId, OffsetDateTime dateTime);
 
-    Date findByEventIdAndDate(Long eventId, OffsetDateTime dateTime);
-
     @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.Date(d.id, d.eventId, d.date,\n" +
             "(SELECT COUNT(v) FROM Vote v WHERE v.id.dateId = d.id) AS votes,\n" +
             "CASE WHEN (SELECT v.id.userId FROM Vote v WHERE v.id.userId = :userId and v.id.dateId = d.id) is not null THEN true ELSE false END AS accepted)\n" +
