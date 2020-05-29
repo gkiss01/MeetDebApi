@@ -19,17 +19,18 @@ public class MeetdebWebApiSecurity extends WebSecurityConfigurerAdapter {
     private static final String API_URL_EVENT = "/events";
     private static final String API_URL_IMAGE = "/images/**";
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UnAuthorizedHandler unAuthorizedHandler;
+    private final AccessIsDeniedHandler accessIsDeniedHandler;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private UnAuthorizedHandler unAuthorizedHandler;
-
-    @Autowired
-    private AccessIsDeniedHandler accessIsDeniedHandler;
+    public MeetdebWebApiSecurity(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder, UnAuthorizedHandler unAuthorizedHandler, AccessIsDeniedHandler accessIsDeniedHandler) {
+        this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.unAuthorizedHandler = unAuthorizedHandler;
+        this.accessIsDeniedHandler = accessIsDeniedHandler;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

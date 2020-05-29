@@ -21,14 +21,16 @@ import java.util.List;
 @Service
 public class ParticipantServiceImpl implements ParticipantService {
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+    private final ParticipantRepository participantRepository;
+    private final EventRepository eventRepository;
+    private final VoteRepository voteRepository;
 
     @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
+    public ParticipantServiceImpl(ParticipantRepository participantRepository, EventRepository eventRepository, VoteRepository voteRepository) {
+        this.participantRepository = participantRepository;
+        this.eventRepository = eventRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @Override
     @Transactional

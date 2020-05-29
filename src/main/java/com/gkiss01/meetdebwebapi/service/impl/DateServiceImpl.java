@@ -18,14 +18,16 @@ import java.util.List;
 @Service
 public class DateServiceImpl implements DateService {
 
-    @Autowired
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
+    private final DateRepository dateRepository;
+    private final VoteRepository voteRepository;
 
     @Autowired
-    private DateRepository dateRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
+    public DateServiceImpl(EventRepository eventRepository, DateRepository dateRepository, VoteRepository voteRepository) {
+        this.eventRepository = eventRepository;
+        this.dateRepository = dateRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @Override
     public List<Date> createDate(Long eventId, OffsetDateTime dateTime, UserWithId userDetails) {

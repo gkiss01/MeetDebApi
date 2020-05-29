@@ -18,8 +18,12 @@ import java.util.List;
 @RequestMapping("dates")
 public class DateController {
 
+    private final DateService dateService;
+
     @Autowired
-    private DateService dateService;
+    public DateController(DateService dateService) {
+        this.dateService = dateService;
+    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

@@ -21,23 +21,22 @@ import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_ADMIN;
 @Service
 public class EventServiceImpl implements EventService {
 
-    @Autowired
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
+    private final ParticipantRepository participantRepository;
+    private final DateRepository dateRepository;
+    private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ParticipantRepository participantRepository;
-
-    @Autowired
-    private DateRepository dateRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public EventServiceImpl(EventRepository eventRepository, ParticipantRepository participantRepository, DateRepository dateRepository, UserRepository userRepository, VoteRepository voteRepository, ModelMapper modelMapper) {
+        this.eventRepository = eventRepository;
+        this.participantRepository = participantRepository;
+        this.dateRepository = dateRepository;
+        this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public Event createEvent(EventRequest eventRequest, UserWithId userDetails) {

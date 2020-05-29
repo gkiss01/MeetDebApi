@@ -15,8 +15,12 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(path = "images/{eventId}")
 public class UploadController {
 
+    private final FileService fileService;
+
     @Autowired
-    private FileService fileService;
+    public UploadController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @ResponseBody
     @GetMapping

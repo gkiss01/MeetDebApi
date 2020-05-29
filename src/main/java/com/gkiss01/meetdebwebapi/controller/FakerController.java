@@ -29,23 +29,22 @@ import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_CLIENT;
 @RequestMapping("faker")
 public class FakerController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final ParticipantRepository participantRepository;
+    private final DateRepository dateRepository;
+    private final VoteRepository voteRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private ParticipantRepository participantRepository;
-
-    @Autowired
-    private DateRepository dateRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    public FakerController(UserRepository userRepository, EventRepository eventRepository, ParticipantRepository participantRepository, DateRepository dateRepository, VoteRepository voteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+        this.participantRepository = participantRepository;
+        this.dateRepository = dateRepository;
+        this.voteRepository = voteRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path = "/users/{count}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

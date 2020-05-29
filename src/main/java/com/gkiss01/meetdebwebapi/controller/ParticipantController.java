@@ -21,11 +21,14 @@ import java.util.List;
 @RequestMapping("participants")
 public class ParticipantController {
 
-    @Autowired
-    private ParticipantService participantService;
+    private final ParticipantService participantService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public ParticipantController(ParticipantService participantService, ModelMapper modelMapper) {
+        this.participantService = participantService;
+        this.modelMapper = modelMapper;
+    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{eventId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

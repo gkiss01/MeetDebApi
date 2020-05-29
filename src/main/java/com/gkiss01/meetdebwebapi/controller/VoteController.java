@@ -18,8 +18,12 @@ import java.util.List;
 @RequestMapping("votes")
 public class VoteController {
 
+    private final VoteService voteService;
+
     @Autowired
-    private VoteService voteService;
+    public VoteController(VoteService voteService) {
+        this.voteService = voteService;
+    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(path = "/{dateId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })

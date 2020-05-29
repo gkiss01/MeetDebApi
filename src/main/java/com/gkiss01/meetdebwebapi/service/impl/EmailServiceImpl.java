@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl {
 
+    private final JavaMailSender javaMailSender;
+
     @Autowired
-    private JavaMailSender javaMailSender;
+    public EmailServiceImpl(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     @Async
     void sendConfirmationMessage(String to, String token) {

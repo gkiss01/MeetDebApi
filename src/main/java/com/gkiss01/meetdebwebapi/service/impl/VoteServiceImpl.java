@@ -19,14 +19,16 @@ import java.util.List;
 @Service
 public class VoteServiceImpl implements VoteService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+    private final VoteRepository voteRepository;
+    private final DateRepository dateRepository;
+    private final ParticipantRepository participantRepository;
 
     @Autowired
-    private DateRepository dateRepository;
-
-    @Autowired
-    private ParticipantRepository participantRepository;
+    public VoteServiceImpl(VoteRepository voteRepository, DateRepository dateRepository, ParticipantRepository participantRepository) {
+        this.voteRepository = voteRepository;
+        this.dateRepository = dateRepository;
+        this.participantRepository = participantRepository;
+    }
 
     @Transactional
     public List<Date> changeVote(Long dateId, UserWithId userDetails) {

@@ -26,12 +26,10 @@ import java.nio.file.Paths;
 public class FileServiceImpl implements FileService {
 
     private final Path fileStorageLocation;
+    private final EventRepository eventRepository;
 
     @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    public FileServiceImpl(@Value("${file.upload.dir}") String uploadDir) {
+    public FileServiceImpl(@Value("${file.upload.dir}") String uploadDir, EventRepository eventRepository) {
         fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
 
         try {
@@ -39,6 +37,7 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             throw new CustomRuntimeException(ErrorCodes.COULD_NOT_CREATE_DIRECTORY);
         }
+        this.eventRepository = eventRepository;
     }
 
     public void storeFile(Long eventId, MultipartFile file) {

@@ -29,32 +29,28 @@ import static com.gkiss01.meetdebwebapi.entity.Role.ROLE_CLIENT;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final EventRepository eventRepository;
+    private final ParticipantRepository participantRepository;
+    private final DateRepository dateRepository;
+    private final VoteRepository voteRepository;
+    private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailServiceImpl emailService;
 
     @Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private ParticipantRepository participantRepository;
-
-    @Autowired
-    private DateRepository dateRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Autowired
-    private EmailServiceImpl emailService;
+    public UserServiceImpl(UserRepository userRepository, ConfirmationTokenRepository confirmationTokenRepository, EventRepository eventRepository, ParticipantRepository participantRepository, DateRepository dateRepository, VoteRepository voteRepository, ModelMapper modelMapper, BCryptPasswordEncoder bCryptPasswordEncoder, EmailServiceImpl emailService) {
+        this.userRepository = userRepository;
+        this.confirmationTokenRepository = confirmationTokenRepository;
+        this.eventRepository = eventRepository;
+        this.participantRepository = participantRepository;
+        this.dateRepository = dateRepository;
+        this.voteRepository = voteRepository;
+        this.modelMapper = modelMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.emailService = emailService;
+    }
 
     @Override
     public User createUser(UserRequest userRequest) {

@@ -23,14 +23,16 @@ import java.util.List;
 @RequestMapping("events")
 public class EventController {
 
-    @Autowired
-    private EventService eventService;
+    private final EventService eventService;
+    private final FileService fileService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private FileService fileService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public EventController(EventService eventService, FileService fileService, ModelMapper modelMapper) {
+        this.eventService = eventService;
+        this.fileService = fileService;
+        this.modelMapper = modelMapper;
+    }
 
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
