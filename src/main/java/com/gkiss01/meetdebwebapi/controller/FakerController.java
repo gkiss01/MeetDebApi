@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +53,7 @@ public class FakerController {
         Faker faker = new Faker(new Locale("hu"));
 
         for (long i = 0; i < count; ++i) {
-            User user = new User(i, faker.internet().emailAddress(), bCryptPasswordEncoder.encode(faker.internet().password()), faker.name().fullName(), true, new HashSet<>(Collections.singletonList(ROLE_CLIENT)));
+            User user = new User(i, faker.internet().emailAddress(), bCryptPasswordEncoder.encode(faker.internet().password()), faker.name().fullName(), true, new HashSet<>(List.of(ROLE_CLIENT)));
             user.setId(null);
             userRepository.save(user);
         }

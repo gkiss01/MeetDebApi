@@ -18,10 +18,9 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static com.gkiss01.meetdebwebapi.utils.Utils.getErrorString;
+import static com.gkiss01.meetdebwebapi.utils.Utils.getHttpStatusFromErrorCode;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -32,15 +31,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         for (ObjectError objectError : exception.getBindingResult().getAllErrors()) {
             errors.add(objectError.getDefaultMessage());
         }
-        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.BAD_REQUEST_FORMAT).errors(errors).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ErrorResponse response = ErrorResponse.builder().errorCode(ErrorCodes.BAD_REQUEST_FORMAT).errors(errors).build();
+        return new ResponseEntity<>(response, getHttpStatusFromErrorCode(ErrorCodes.BAD_REQUEST_FORMAT));
     }
 
     @ExceptionHandler(value = {MaxUploadSizeExceededException.class})
-    public ResponseEntity<Object> handleMaxUploadSizeExceeded() {
-        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED)
-                .errors(Collections.singletonList(getErrorString(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED))).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Object> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException exception) {
+        ErrorResponse response = ErrorResponse.builder().errorCode(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED)
+                .errors(List.of("Max file size is " + exception.getMaxUploadSize() / 1000 + " kB!")).build();
+        return new ResponseEntity<>(response, getHttpStatusFromErrorCode(ErrorCodes.FILE_SIZE_LIMIT_EXCEEDED));
     }
 
     @ExceptionHandler(value = {CustomFileNotFoundException.class})
@@ -50,9 +49,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {CustomRuntimeException.class})
     public ResponseEntity<Object> handleCustomRuntimeException(CustomRuntimeException exception) {
-        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(exception.getErrorCode())
-                .errors(Collections.singletonList(getErrorString(exception.getErrorCode()))).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ErrorResponse response = ErrorResponse.builder().errorCode(exception.getErrorCode()).build();
+        return new ResponseEntity<>(response, getHttpStatusFromErrorCode(exception.getErrorCode()));
     }
 
     @ExceptionHandler(value = {Exception.class})
@@ -61,8 +59,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             throw exception;
         }
 
-        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(ErrorCodes.UNKNOWN)
-                .errors(Collections.singletonList(exception.getLocalizedMessage())).build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        ErrorResponse response = ErrorResponse.builder().errorCode(ErrorCodes.UNKNOWN)
+                .errors(List.of(exception.getLocalizedMessage())).build();
+        return new ResponseEntity<>(response, getHttpStatusFromErrorCode(ErrorCodes.UNKNOWN));
     }
 }

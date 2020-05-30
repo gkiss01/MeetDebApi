@@ -12,16 +12,9 @@ import java.util.List;
 @Getter
 @Builder
 public class ErrorResponse {
-
-    private final Boolean error;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Enumerated(EnumType.STRING)
     private final ErrorCodes errorCode;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<String> errors;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private final Long withId;
 }

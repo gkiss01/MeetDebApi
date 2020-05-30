@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRequest, User.class);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(new HashSet<>(Collections.singletonList(ROLE_CLIENT)));
+        user.setRoles(new HashSet<>(List.of(ROLE_CLIENT)));
         user.setEnabled(false);
 
         user = userRepository.save(user);

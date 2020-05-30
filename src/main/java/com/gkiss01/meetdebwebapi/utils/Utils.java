@@ -3,17 +3,16 @@ package com.gkiss01.meetdebwebapi.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.gkiss01.meetdebwebapi.model.ErrorResponse;
+import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 
 public class Utils {
     public static void errorResponse(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, ErrorCodes errorCode) throws IOException {
-        ErrorResponse response = ErrorResponse.builder().error(true).errorCode(errorCode)
-                .errors(Collections.singletonList(getErrorString(errorCode))).build();
+        ErrorResponse response = ErrorResponse.builder().errorCode(errorCode).build();
         OutputStream out = httpServletResponse.getOutputStream();
 
         ObjectMapper mapper;
@@ -26,45 +25,30 @@ public class Utils {
             mapper = new ObjectMapper();
         }
 
-        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+        httpServletResponse.setStatus(getHttpStatusFromErrorCode(errorCode).value());
         mapper.writeValue(out, response);
         out.flush();
     }
 
-    public static String getErrorString(ErrorCodes errorCode) {
-        switch (errorCode) {
-            case USER_NOT_FOUND: return "User is not found!";
-            case NO_USERS_FOUND: return "No users found!";
-            case CONFIRMATION_TOKEN_NOT_FOUND: return "Confirmation token is not found!";
-            case EMAIL_ALREADY_IN_USE: return "Email is already in use!";
-            case USER_ALREADY_VERIFIED: return "User is already verified!";
+    public static HttpStatus getHttpStatusFromErrorCode(ErrorCodes errorCode) {
+        return switch (errorCode) {
+            case USER_NOT_FOUND, CONFIRMATION_TOKEN_NOT_FOUND, EVENT_NOT_FOUND, PARTICIPANT_NOT_FOUND, DATE_NOT_FOUND,
+                    VOTE_NOT_FOUND, FILE_NOT_FOUND, NO_USERS_FOUND, NO_EVENTS_FOUND, NO_DATES_FOUND -> HttpStatus.NOT_FOUND;
 
-            case EVENT_NOT_FOUND: return "Event is not found!";
-            case NO_EVENTS_FOUND: return "No events found!";
+            case EMAIL_ALREADY_IN_USE, USER_ALREADY_VERIFIED, PARTICIPANT_ALREADY_CREATED,
+                    DATE_ALREADY_CREATED, VOTE_ALREADY_CREATED -> HttpStatus.CONFLICT;
 
-            case PARTICIPANT_NOT_FOUND: return "Participant is not found!";
-            case NO_PARTICIPANTS_FOUND: return "No participants found!";
-            case PARTICIPANT_ALREADY_CREATED: return "Participant is already created!";
+            case FILENAME_INVALID, COULD_NOT_CONVERT_IMAGE, FILE_SIZE_LIMIT_EXCEEDED -> HttpStatus.UNPROCESSABLE_ENTITY;
 
-            case DATE_NOT_FOUND: return "Date is not found!";
-            case NO_DATES_FOUND: return "No dates found!";
-            case DATE_ALREADY_CREATED: return "Date is already created!";
+            case UPLOAD_FAILED, COULD_NOT_CREATE_DIRECTORY -> HttpStatus.INTERNAL_SERVER_ERROR;
 
-            case VOTE_NOT_FOUND: return "Vote is not found!";
-            case VOTE_ALREADY_CREATED: return "Vote is already created!";
+            case BAD_REQUEST_FORMAT -> HttpStatus.BAD_REQUEST;
 
-            case FILE_NOT_FOUND: return "File is not found!";
-            case FILENAME_INVALID: return "Filename is invalid!";
-            case COULD_NOT_CONVERT_IMAGE: return "Could not convert image!";
-            case FILE_SIZE_LIMIT_EXCEEDED: return "Size limit is exceeded!";
-            case UPLOAD_FAILED: return "Upload failed!";
-            case COULD_NOT_CREATE_DIRECTORY: return "Could not create directory!";
+            case ACCESS_DENIED -> HttpStatus.FORBIDDEN;
 
-            case BAD_REQUEST_FORMAT: return "Bad request format!";
-            case ACCESS_DENIED: return "Access is denied!";
-            case USER_DISABLED_OR_NOT_VALID: return "User is disabled or not valid!";
+            case USER_DISABLED_OR_NOT_VALID -> HttpStatus.UNAUTHORIZED;
 
-            default: return "Unknown error!";
-        }
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
     }
 }
