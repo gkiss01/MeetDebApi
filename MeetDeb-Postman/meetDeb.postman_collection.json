@@ -1,0 +1,1274 @@
+{
+	"info": {
+		"_postman_id": "dad65d0b-1c63-45f1-bfff-7fa3cb7dc80b",
+		"name": "meetDeb",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Create event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "event",
+									"type": "file",
+									"src": "/C:/Users/gergo/Desktop/MeetDeb-Postman/event.json"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/gergo/Desktop/MeetDeb-Postman/kep2.jpg"
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/events",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "event",
+									"type": "file",
+									"src": "/C:/Users/gergo/Desktop/MeetDeb-Postman/event-update.json"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/gergo/Desktop/MeetDeb-Postman/kep2.jpg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/events/update",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get events",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/events",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/events/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/events/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create report",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/events/reports/add/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"reports",
+								"add",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove report ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/events/reports/remove/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"events",
+								"reports",
+								"remove",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"gergokiss07@gmail.com\",\n\t\"password\": \"asdasdasd\",\n\t\"name\": \"Gergő TÖRLÉS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Gergő Admin UPDATE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"gergokiss06@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/33",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss07@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/67",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"67"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current user",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/me",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm user",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/confirm?token=482730bc-4849-4aed-b12f-624f43d8f3f6",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"confirm"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "482730bc-4849-4aed-b12f-624f43d8f3f6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get events summary",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/eventsSummary/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"eventsSummary",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Participants",
+			"item": [
+				{
+					"name": "Modify participation",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/participants/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"participants",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get participants",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/participants/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"participants",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete participant ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/participants/1/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"participants",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Dates",
+			"item": [
+				{
+					"name": "Create date",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/dates/1?date=2020-12-21T10:15:30Z",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dates",
+								"1"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2020-12-21T10:15:30Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get dates",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/dates/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete date ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/dates/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"dates",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Votes",
+			"item": [
+				{
+					"name": "Change vote",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/votes/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"votes",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Download image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/images/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"images",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload image ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/gergo/Desktop/MeetDeb-Postman/kep2.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/images/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"images",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete image ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/images/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"images",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Faker",
+			"item": [
+				{
+					"name": "Create users",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/users/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"users",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create events",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/events/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"events",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create participants for event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/participants/20/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"participants",
+								"20",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create participants",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/participants/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"participants",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create dates for event",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/dates/1/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"dates",
+								"1",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create dates",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/dates/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"dates",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create votes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/faker/votes/20",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"faker",
+								"votes",
+								"20"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
