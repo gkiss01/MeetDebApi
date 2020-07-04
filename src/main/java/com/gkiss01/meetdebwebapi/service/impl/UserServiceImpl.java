@@ -1,6 +1,7 @@
 package com.gkiss01.meetdebwebapi.service.impl;
 
 import com.gkiss01.meetdebwebapi.entity.ConfirmationToken;
+import com.gkiss01.meetdebwebapi.entity.EventSummary;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.repository.*;
@@ -139,6 +140,16 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public EventSummary getEventsSummaryForUser(Long userId) {
+        User user = userRepository.findUserById(userId);
+
+        if (user == null)
+            throw new CustomRuntimeException(ErrorCodes.USER_NOT_FOUND);
+
+        return userRepository.getEventsSummaryById(userId);
     }
 
     @Override

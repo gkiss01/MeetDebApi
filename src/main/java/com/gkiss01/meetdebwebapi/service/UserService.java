@@ -1,5 +1,6 @@
 package com.gkiss01.meetdebwebapi.service;
 
+import com.gkiss01.meetdebwebapi.entity.EventSummary;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
 import com.gkiss01.meetdebwebapi.utils.UserWithId;
@@ -14,4 +15,5 @@ public interface UserService extends UserDetailsService {
     User getUser(Long userId);
     List<User> getUsers(int page, int limit);
     User confirmUser(String token);
+    EventSummary getEventsSummaryForUser(Long userId);
 }

@@ -1,5 +1,6 @@
 package com.gkiss01.meetdebwebapi.controller;
 
+import com.gkiss01.meetdebwebapi.entity.EventSummary;
 import com.gkiss01.meetdebwebapi.entity.User;
 import com.gkiss01.meetdebwebapi.model.SuccessResponse;
 import com.gkiss01.meetdebwebapi.model.UserRequest;
@@ -69,6 +70,12 @@ public class UserController {
 
         User user = userService.getUser(userDetails.getUserId());
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping(path = "/eventsSummary/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public EventSummary getEventsSummaryForUser(@PathVariable Long userId) {
+        return userService.getEventsSummaryForUser(userId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
