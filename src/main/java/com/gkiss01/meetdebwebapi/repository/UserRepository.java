@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @SuppressWarnings("SpringDataRepositoryMethodReturnTypeInspection")
     @Query("SELECT NEW com.gkiss01.meetdebwebapi.entity.EventSummary(u.id, (SELECT COUNT(e) FROM Event e WHERE e.userId = u.id) AS eventsCreated,\n" +
-            "(SELECT COUNT(e) FROM Event e WHERE e.userId = u.id) AS eventsInvolved)\n" +
+            "(SELECT COUNT(e) FROM Event e WHERE e.date < CURRENT_DATE() AND e.id IN (SELECT p.id.eventId FROM Participant p WHERE p.id.userId = u.id)) AS eventsInvolved)\n" +
             "FROM User u WHERE u.id = :userId")
     EventSummary getEventsSummaryById(@Param("userId") Long userId);
 }
