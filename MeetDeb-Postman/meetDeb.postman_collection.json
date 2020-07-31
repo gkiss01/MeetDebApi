@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "dad65d0b-1c63-45f1-bfff-7fa3cb7dc80b",
+		"_postman_id": "97ac6b2a-a33c-4ac9-8f21-a6792efeffb7",
 		"name": "meetDeb",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -619,14 +619,50 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/users/eventsSummary/1",
+							"raw": "localhost:8080/users/summary/events",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
 								"users",
-								"eventsSummary",
+								"summary",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get events summary ADMIN",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "gergokiss05@gmail.com",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "asdasdasd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/summary/events/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"summary",
+								"events",
 								"1"
 							]
 						}

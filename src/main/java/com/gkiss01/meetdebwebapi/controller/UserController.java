@@ -73,9 +73,11 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('CLIENT')")
-    @GetMapping(path = "/eventsSummary/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public EventSummary getEventsSummaryForUser(@PathVariable Long userId) {
-        return userService.getEventsSummaryForUser(userId);
+    @GetMapping(path = "/summary/events", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public EventSummary getEventsSummary(Authentication authentication) {
+        UserWithId userDetails = (UserWithId) authentication.getPrincipal();
+
+        return userService.getEventsSummaryForUser(userDetails.getUserId());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -100,6 +102,12 @@ public class UserController {
     public UserResponse getUser(@PathVariable Long userId) {
         User user = userService.getUser(userId);
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(path = "/summary/events/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public EventSummary getEventsSummary(@PathVariable Long userId) {
+        return userService.getEventsSummaryForUser(userId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
